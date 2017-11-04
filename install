@@ -1,0 +1,10 @@
+# Add StatelessCMS to gitignore
+echo "" >> .gitignore
+echo "# StatlessCMS" >> .gitignore
+echo "lib/" >> .gitignore
+
+# Remove tests
+rm -rf tests/*.php
+
+# Make directories
+mkdir app app/controller app/form app/layout app/menu app/model app/view script script/build script/job test
