@@ -4,3 +4,6 @@
 
 # Doc
 doc/
+
+# Package
+vendor/
