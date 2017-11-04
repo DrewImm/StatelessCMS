@@ -177,10 +177,7 @@ class Session {
                 $agent === $sAgent &&
                 $address === $sAddress
             );
-
-            // Check expiration
-            // Todo
-
+            
             // Return the results
             return ($validateNonce && $validateAgent);
         }
