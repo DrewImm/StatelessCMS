@@ -5,7 +5,7 @@ use Stateless\DatabaseColumn;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers Database
+ * @covers Database, DatabaseColumn
  */
 final class DatabaseTest extends TestCase {
     public function testConnect() {
