@@ -398,10 +398,9 @@ class Database {
 
         // Loop through payload keys
         foreach ($payload as $key => $value) {
-            $query .= $key . " = ? AND ";
+            $query .= $key . " = ?, ";
         }
-        $query = rtrim($query, " AND");
-        $query .= ")";
+        $query = rtrim($query, ", ");
 
         // Loop through where keys
         if (!empty($where)) {
