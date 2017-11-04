@@ -29,7 +29,7 @@ class Session {
      * @param integer $pepperLength Length of the nonce pepper
      * @param string $prefix Session prefix.  Default is "__"
      */
-    public static function create(
+    public function create(
         $uuid = 0,
         $ttl = 7,
         $salt = "$",
@@ -81,7 +81,7 @@ class Session {
     /**
      * @brief Destroy the session
      */
-    public static function destroy() {
+    public function destroy() {
         session_destroy();
     }
 
@@ -90,7 +90,7 @@ class Session {
      * @param string $prefix The session prefix to check for
      * @return boolean Returns if the session is active (but maybe not valid)
      */
-    public static function isActive($prefix) {
+    public function isActive($prefix) {
         return (
             isset($_SESSION) &&
             !empty($_SESSION[$prefix . "n"])
@@ -106,7 +106,7 @@ class Session {
      * @param string $prefix The session prefix to check for.  Default is "__"
      * @return boolean Returns if the session is valid
      */
-    public static function isValid(
+    public function isValid(
         $uuid = 0,
         $ttl = 7,
         $salt = "$",
@@ -180,7 +180,7 @@ class Session {
      * @param $prefix Session prefix to fetch the session $uuid from
      * @return mixed Returns the user ID or false on failure
      */
-    public static function getUserId($prefix) {
+    public function getUserId($prefix) {
         if (
             $this->isActive($prefix) &&
             !empty($_SESSION[$prefix . "u"])

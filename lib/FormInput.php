@@ -25,7 +25,7 @@ class FormInput {
      * @brief Output the input markup to the current output buffer
      * @param Request $request Request object to get form data from
      */
-    public static function show($request) {
+    public function show($request) {
         $attributes = "";
 
         // Convert "toggle" field to normal checkbox
@@ -167,7 +167,7 @@ class FormInput {
     /**
      * @brief Output the input's script to the current output buffer
      */
-    public static function showScript() {
+    public function showScript() {
         switch ($this->type) {
             case "visual":
                 // Output CKeditor script
@@ -185,7 +185,7 @@ class FormInput {
      * @param Request $request The request to check
      * @return boolean `true` if the input has value, otherwise `false`
      */
-    public static function hasValue($request) {
+    public function hasValue($request) {
         return (
             isset($request->payload) &&
             isset($request->payload[$this->slug])
@@ -197,7 +197,7 @@ class FormInput {
      * @param Request $request The request to get the value from
      * @return mixed Returns the value from the array, or `false` if not set
      */
-    public static function getValue($request) {
+    public function getValue($request) {
         // Check if the request has the value
         if ($this->hasValue($request)) {
             return $request->payload[$this->slug];

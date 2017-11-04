@@ -62,7 +62,7 @@ class Form {
      * @param Request $request Request object to check for submission
      * @return boolean Returns if a submission exists in the request
      */
-    public static function isSubmit($request) {
+    public function isSubmit($request) {
         // Checck for the nonce key in the request payload
         return (
             isset($request->payload) &&
@@ -75,7 +75,7 @@ class Form {
      * @param Request $request Request object to check submission from
      * @return boolean Returns if the form submission is valid
      */
-    public static function isValid($request) {
+    public function isValid($request) {
         // Check for form submission
         if ($this->isSubmit($request)) {
             // Validate the nonce
@@ -115,7 +115,7 @@ class Form {
      * @param Request $request Request object to get form submission from
      * @return mixed Returns key/value pairs of the form, or false on failure
      */
-    public static function getValues($request) {
+    public function getValues($request) {
         $values = array();
 
         // Get each input value
@@ -130,7 +130,7 @@ class Form {
     /**
      * @brief Output the form markup to the current output buffer
      */
-    public static function getMarkup($request) {
+    public function getMarkup($request) {
         // Output form tag
         echo 
             "<form method=\"" . $this->method . "\"" .
