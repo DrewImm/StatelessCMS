@@ -6,13 +6,13 @@ namespace Stateless;
  * @brief A session tracks the php session
  */
 class Session {
-    public $id; /**< Session id */
-    public $uuid; /**< Session user Id */
-    public $nonce; /**< Session nonce */
-    public $userAgent; /**< Session user agent */
-    public $address; /**< Session client IP address */
-    public $expires; /**< Time since epoch the session expires */
-    public $name = "session"; /**< Session name, for verification.  Default is "session" */
+    public $id;
+    public $uuid;
+    public $nonce;
+    public $userAgent;
+    public $address;
+    public $expires;
+    public $name = "session";
 
     /**
      * @brief Construct a new session object
@@ -99,11 +99,7 @@ class Session {
 
     /**
      * @brief Check if the session is active and valid
-     * @param integer $uuid User id to validate.  Default is 0
-     * @param integer $ttl Time to live of the session (days).  Default is 7
-     * @param string $salt Salt to append to the nonce.  Default is "$"
-     * @param integer $pepperLength Length of pepper for nonce.  Default is 2
-     * @param string $prefix The session prefix to check for.  Default is "__"
+     * @param string $prefix The session prefix to check for
      * @return boolean Returns if the session is valid
      */
     public static function isValid(

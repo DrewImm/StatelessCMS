@@ -8,30 +8,30 @@ namespace Stateless;
 class MenuItem {
      public $label; /**< Human-readable text to display */
      public $href; /**< Path href the menu item should execute */
+     public $id; /**< Optional #id tag for the item */
+     public $class; /**< Optional CSS class to attach to this menu item */
      public $tooltip; /**< Optional tooltip to attach to this menu item */
      public $tooltipLocation; /**< Optional tooltip location */
      public $attributes; /**< Array of additional attributes */
-     public $id; /**< Optional id attribute for the item */
-     public $class; /**< Optional CSS class to attach to this menu item */
 
     /**
      * @brief Create a new menu item
      * @param string $label Human-readable text to display
      * @param string $href Path href the menu item should execute
-     * @param mixed $tooltip Tooltip string to use, or false for none
-     * @param string $tooltipLocation Tooltip location.  Default is "bottom"
-     * @param array $attributes Array of additional attributes
-     * @param string $id Optional id attribute for the item
+     * @param string $id Optional #id tag for the item
      * @param string $class Optional CSS class to attach to this menu item
+     * @param string $tooltip Optional tooltip to attach to this menu item
+     * @param string $tooltipLocation Optional tooltip location
+     * @param array $attributes Array of additional attributes
     */
     public function __construct(
         $label,
         $href,
         $tooltip = false,
         $tooltipLocation = "bottom",
-        $attributes = array(),
         $id = false,
-        $class = false
+        $class = false,
+        $attributes = array()
     ) {
         $this->label = $label;
         $this->href = $href;

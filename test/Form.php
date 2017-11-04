@@ -2,20 +2,17 @@
 
 namespace Stateless;
 
-/**
- * @brief Create and verify html forms
- */
 class Form {
-    public $name; /**< string Form name to validate submission */
-    public $inputs; /**< Array of FormInput objects to populate the form */
-    public $method; /**< string HTTP method to use.  Default is POST */
-    public $action; /**< Form action.  Default is empty */
-    public $uuid; /**< User ID to validate submission.  Default is 0 */
-    public $obid; /**< Object ID to validate submission.  Default is 0 */
-    public $ttl; /**< Time (in seconds) for a form submission to live.  Default is 3600 seconds. */
-    public $salt; /**< Salt string to apply to the nonce.  Default is "_" */
-    public $pepperLength; /**< Length of the pepper to apply to the nonce.  Default is 2 characters */
-    public $nonceKey; /**< The key for the hidden nonce field.  Default is "__nonce" */
+    public $name;
+    public $method;
+    public $inputs;
+    public $action;
+    public $uuid;
+    public $obid;
+    public $ttl;
+    public $salt;
+    public $pepperLength;
+    public $nonceKey;
 
     /**
      * @brief Construct a new Form
@@ -35,7 +32,7 @@ class Form {
      */
     public function __construct(
         $name,
-        $inputs,
+        $input,
         $method = "POST",
         $action = "",
         $uuid = 0,

@@ -2,11 +2,6 @@
 
 namespace Stateless;
 
-defined("NONCE_TIME_LENGTH") or define("NONCE_TIME_LENGTH", 10);
-
-/**
- * @brief Create and verify nonces and other cryptography strings
- */
 class Crypto {
     /**
      * @brief Hash a string
@@ -30,7 +25,7 @@ class Crypto {
      * @brief Appends $salt to $str
      * @param string $str The string to salt
      * @param string $salt The salt to append
-     * @return boolean Returns the salted string
+     * @param boolean Returns the salted string
      */
     public static function salt($str, $salt) {
         return $str . $salt;
@@ -67,7 +62,7 @@ class Crypto {
      * @param mixed $uuid The user Id to derive the pepper from
      * @param string $salt String to use as a salt
      * @param integer $pepperLength Length of the pepper to generate
-     * @return string Returns the string with salt and pepper
+     * @param string Returns the string with salt and pepper
      */
     public static function spice($str, $uuid, $salt, $pepperLength) {
         return getPepper($uuid, $pepperLength) . salt($str, $salt);
@@ -237,7 +232,6 @@ class Crypto {
      * @param string $action The action being performed
      * @param integer $uuid The user Id to include in the nonce
      * @param integer $obid The object Id currently being edited
-     * @param integer $ttl Time to live, in seconds
      * @param string $salt The string the nonce was salted with
      * @param integer $pepperLength The length of the pepper
      * @return boolean Returns if the nonce is valid
@@ -293,7 +287,7 @@ class Crypto {
 
     /**
      * @brief Generates a hidden nonce field
-     * @param string $key The key for this field in the form
+     * @param string $name The key for this field in the form
      * @param string $nonce The nonce for the value of this form
      * @return string Returns the html markup of the hidden field
      */

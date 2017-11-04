@@ -210,7 +210,7 @@ class FormInput {
     /**
      * @brief Check if the input is valid
      * @param Request $request The request to get the value from
-     * @return boolean Returns if the input field is valid
+     * @param boolean Returns if the input field is valid
      */
     public function isValid($request) {
         // Check if it's a button
