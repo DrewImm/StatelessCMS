@@ -3,7 +3,8 @@
 use Stateless\Crypto;
 use PHPUnit\Framework\TestCase;
 
-define("CIPHER_KEY", "lKKL2UuzmHKdBB1vHDFzNzCiTei6jWOTDdE7tJPPMGYQpnohGQUhVduwZTSP1ESyUcLMUPhPhCCEuSYGIJr0gw==");
+defined("CIPHER_KEY") or
+    define("CIPHER_KEY", "lKKL2UuzmHKdBB1vHDFzNzCiTei6jWOTDdE7tJPPMGYQpnohGQUhVduwZTSP1ESyUcLMUPhPhCCEuSYGIJr0gw==");
 
 /**
  * @covers Crypto
@@ -12,6 +13,7 @@ const in = "Test";
 const uuid = 123;
 const salt = "_salt";
 const pepperLen = 3;
+const ttl = 3600;
 
 final class CryptoTest extends TestCase {
     public function testHash() {
@@ -156,7 +158,7 @@ final class CryptoTest extends TestCase {
                 "test-nonce",
                 uuid,
                 0,
-                3600,
+                ttl,
                 salt,
                 pepperLen,
                 CIPHER_KEY,
@@ -168,7 +170,7 @@ final class CryptoTest extends TestCase {
                 "test-nonce",
                 uuid,
                 0,
-                3600,
+                ttl,
                 salt,
                 pepperLen,
                 CIPHER_KEY,

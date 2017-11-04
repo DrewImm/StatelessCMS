@@ -2,45 +2,47 @@
 
 namespace Stateless;
 
+session_start();
+
 /**
- * @brief A session tracks the php session
+ * @brief A Session tracks the php session
  */
 class Session {
-    public $id; /**< Session id */
-    public $uuid; /**< Session user Id */
-    public $nonce; /**< Session nonce */
-    public $userAgent; /**< Session user agent */
-    public $address; /**< Session client IP address */
-    public $expires; /**< Time since epoch the session expires */
-    public $name = "session"; /**< Session name, for verification.  Default is "session" */
+    private static $id; /**< Session id */
+    private static $uuid; /**< Session user Id */
+    private static $nonce; /**< Session nonce */
+    private static $userAgent; /**< Session user agent */
+    private static $address; /**< Session client IP address */
+    private static $expires; /**< Time since epoch the session expires */
+    private static $name = "session"; /**< Session name, for verification.  Default is "session" */
+    private static $prefix; /**< Session prefix */
 
     /**
-     * @brief Construct a new session object
-     */
-    public function __construct() {
-        session_start();
-    }
-
-    /**
-     * @brief Create a new session object
+     * @brief Create a new session
+     * @param string $cipherKey Cipher key to encrypt the nonce field
+     * @param reference &$cipherIv Reference to openssl $iv
+     * @param reference &$cipherTag Reference to openssl $tag
      * @param integer $uuid User ID to associate the nonce with.  Default is 0
      * @param integer $ttl Time to live (days).  Default is 7
-     * @param string $salt String to salt the nonce with.  Default is "$"
+     * @param string $salt String to salt the nonce with.
      * @param integer $pepperLength Length of the nonce pepper
      * @param string $prefix Session prefix.  Default is "__"
      */
-    public function create(
+    public static function create(
+        $cipherKey,
+        &$cipherIv,
+        &$cipherTag,
         $uuid = 0,
         $ttl = 7,
-        $salt = "$",
-        $pepperLength = 2,
+        $salt = "_",
+        $pepperLength = 3,
         $prefix = "__"
     ) {
         // Destroy old session
-        $this->destroy();
+        Session::destroy();
 
         // Use the user's address as the object Id
-        $this->address = filter_input(
+        Session::$address = filter_input(
             INPUT_SERVER,
             "REMOTE_ADDR",
             FILTER_SANITIZE_URL
@@ -53,36 +55,42 @@ class Session {
         $expires = $ttl + Crypto::nonceTime();
 
         // Create the nonce
-        $this->nonce = Crypto::nonce(
-            $this->name,
+        Session::$nonce = Crypto::nonce(
+            Session::$name,
             $uuid,
-            $this->address,
+            Session::$address,
             $expires,
             $salt,
-            $pepperLength
+            $pepperLength,
+            $cipherKey,
+            $cipherIv,
+            $cipherTag
         );
 
         // Create the session object
-        $this->uuid = $uuid;
-        $this->expires = $expires;
-        $this->userAgent = filter_input(
+        Session::$uuid = $uuid;
+        Session::$expires = $expires;
+        Session::$userAgent = filter_input(
             INPUT_SERVER,
             "HTTP_USER_AGENT",
             FILTER_SANITIZE_STRING
         );
 
         // Create the session
-        $_SESSION[$prefix . "n"] = $this->nonce;
+        $_SESSION[$prefix . "n"] = Session::$nonce;
         $_SESSION[$prefix . "u"] = $uuid;
-        $_SESSION[$prefix . "a"] = $this->userAgent;
-        $_SESSION[$prefix . "i"] = $this->address;
+        $_SESSION[$prefix . "a"] = Session::$userAgent;
+        $_SESSION[$prefix . "i"] = Session::$address;
     }
 
     /**
      * @brief Destroy the session
      */
-    public function destroy() {
-        session_destroy();
+    public static function destroy() {
+        if (!empty($_SESSION)) {
+            session_destroy();
+            unset($_SESSION);
+        }
     }
 
     /**
@@ -90,7 +98,7 @@ class Session {
      * @param string $prefix The session prefix to check for
      * @return boolean Returns if the session is active (but maybe not valid)
      */
-    public function isActive($prefix) {
+    public static function isActive($prefix) {
         return (
             isset($_SESSION) &&
             !empty($_SESSION[$prefix . "n"])
@@ -99,6 +107,9 @@ class Session {
 
     /**
      * @brief Check if the session is active and valid
+     * @param string $cipherKey Cipher key to encrypt the nonce field
+     * @param reference &$cipherIv Reference to openssl $iv
+     * @param reference &$cipherTag Reference to openssl $tag
      * @param integer $uuid User id to validate.  Default is 0
      * @param integer $ttl Time to live of the session (days).  Default is 7
      * @param string $salt Salt to append to the nonce.  Default is "$"
@@ -106,7 +117,10 @@ class Session {
      * @param string $prefix The session prefix to check for.  Default is "__"
      * @return boolean Returns if the session is valid
      */
-    public function isValid(
+    public static function isValid(
+        $cipherKey,
+        &$cipherIv,
+        &$cipherTag,
         $uuid = 0,
         $ttl = 7,
         $salt = "$",
@@ -114,9 +128,9 @@ class Session {
         $prefix = "__"
     ) {
         // Check if the session is active
-        if ($this->isActive($prefix)) {
+        if (Session::isActive($prefix)) {
             // Get address
-            $this->address = filter_input(
+            $address = filter_input(
                 INPUT_SERVER,
                 "REMOTE_ADDR",
                 FILTER_SANITIZE_URL
@@ -125,26 +139,26 @@ class Session {
             // Format $ttl to days
             $ttl *= 86400;
 
-            $this->uuid = $uuid;
-            $this->ttl = $ttl;
-            $this->salt = $salt;
-            $this->pepperLength = $pepperLength;
-            $this->prefix = $prefix;
+            Session::$uuid = $uuid;
+            Session::$prefix = $prefix;
 
             // Validate nonce
             $validateNonce = Crypto::validateNonce(
-                $_SESSION[$prefix . "a"],
-                $this->name,
-                $this->uuid,
-                $this->address,
-                $this->ttl,
-                $this->salt,
-                $this->pepperLength
+                $_SESSION[$prefix . "n"],
+                Session::$name,
+                $uuid,
+                $address,
+                $ttl,
+                $salt,
+                $pepperLength,
+                $cipherKey,
+                $cipherIv,
+                $cipherTag
             );
 
             // Get stored user agent and address
-            $this->agent = $_SESSION[$prefix . "a"];
-            $this->address = $_SESSION[$prefix . "i"];
+            $sAgent = $_SESSION[$prefix . "a"];
+            $sAddress = $_SESSION[$prefix . "i"];
 
             // Get current user agent and address
             $agent = filter_input(
@@ -160,8 +174,8 @@ class Session {
 
             // Check user agent and address
             $validateAgent = (
-                $agent === $this->agent &&
-                $address === $this->address
+                $agent === $sAgent &&
+                $address === $sAddress
             );
 
             // Check expiration
@@ -180,9 +194,9 @@ class Session {
      * @param $prefix Session prefix to fetch the session $uuid from
      * @return mixed Returns the user ID or false on failure
      */
-    public function getUserId($prefix) {
+    public static function getUserId($prefix) {
         if (
-            $this->isActive($prefix) &&
+            Session::isActive($prefix) &&
             !empty($_SESSION[$prefix . "u"])
         ) {
             return $_SESSION[$prefix . "u"];

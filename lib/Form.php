@@ -2,12 +2,15 @@
 
 namespace Stateless;
 
+use Stateless\Request;
+
 /**
  * @brief Create and verify html forms
  */
 class Form {
     public $name; /**< string Form name to validate submission */
     public $inputs; /**< Array of FormInput objects to populate the form */
+    public $cipherKey; /**< Cipher key to encrypt the nonce field */
     public $method; /**< string HTTP method to use.  Default is POST */
     public $action; /**< Form action.  Default is empty */
     public $uuid; /**< User ID to validate submission.  Default is 0 */
@@ -21,6 +24,7 @@ class Form {
      * @brief Construct a new Form
      * @param string $name Form name to validate submission
      * @param array $inputs Array of FormInput objects to populate the form
+     * @param string $cipherKey Cipher key to encrypt the nonce field
      * @param string $method HTTP method to use.  Default is POST
      * @param string $action Form action.  Default is empty
      * @param integer $uuid User ID to validate submission.  Default is 0
@@ -36,6 +40,7 @@ class Form {
     public function __construct(
         $name,
         $inputs,
+        $cipherKey,
         $method = "POST",
         $action = "",
         $uuid = 0,
@@ -48,6 +53,7 @@ class Form {
         $this->name = $name;
         $this->method = $method;
         $this->inputs = $inputs;
+        $this->cipherKey = $cipherKey;
         $this->action = $action;
         $this->uuid = $uuid;
         $this->obid = $obid;
@@ -59,34 +65,38 @@ class Form {
 
     /**
      * @brief Check for a submission
-     * @param Request $request Request object to check for submission
      * @return boolean Returns if a submission exists in the request
      */
-    public function isSubmit($request) {
+    public function isSubmit() {
+        $payload = Request::getPayload();
         // Checck for the nonce key in the request payload
         return (
-            isset($request->payload) &&
-            array_key_exists($this->nonceKey, $request->payload)
+            !empty($payload) &&
+            array_key_exists($this->nonceKey, $payload)
         );
     }
 
     /**
      * @brief Check if the form's nonce and data is valid
-     * @param Request $request Request object to check submission from
+     * @param reference &$iv Reference to openssl $iv
+     * @param reference &$tag Reference to openssl $tag
      * @return boolean Returns if the form submission is valid
      */
-    public function isValid($request) {
+    public function isValid(&$iv, &$tag) {
         // Check for form submission
-        if ($this->isSubmit($request)) {
+        if ($this->isSubmit()) {
             // Validate the nonce
             $valid = Crypto::validateNonce(
-                $request->payload[$this->nonceKey],
+                Request::getPayload()[$this->nonceKey],
                 $this->name,
                 $this->uuid,
                 $this->obid,
                 $this->ttl,
                 $this->salt,
-                $this->pepperLength
+                $this->pepperLength,
+                $this->cipherKey,
+                $iv,
+                $tag
             );
 
             // Return if not valid
@@ -96,7 +106,7 @@ class Form {
 
             // Check each input for validity
             foreach ($this->inputs as $input) {
-                if (!$input->isValid($request)) {
+                if (!$input->isValid()) {
                     return false;
                 }
             }
@@ -112,15 +122,17 @@ class Form {
 
     /**
      * @brief Get an array of the fields' input values
-     * @param Request $request Request object to get form submission from
      * @return mixed Returns key/value pairs of the form, or false on failure
      */
-    public function getValues($request) {
+    public function getValues() {
         $values = array();
 
         // Get each input value
         foreach ($this->inputs as $input) {
-            $values[$input->slug] = $input->getValue($request);
+            $value = $input->getValue();
+            if ($value !== false) {
+                $values[$input->slug] = $input->getValue();
+            }
         }
 
         // Return the values, or false if empty
@@ -129,8 +141,10 @@ class Form {
 
     /**
      * @brief Output the form markup to the current output buffer
+     * @param reference &$iv Reference to openssl $iv
+     * @param reference &$tag Reference to openssl $tag
      */
-    public function getMarkup($request) {
+    public function show(&$iv, &$tag) {
         // Output form tag
         echo 
             "<form method=\"" . $this->method . "\"" .
@@ -145,18 +159,21 @@ class Form {
             $this->obid,
             $this->ttl,
             $this->salt,
-            $this->pepperLength
+            $this->pepperLength,
+            $this->cipherKey,
+            $iv,
+            $tag
         );
 
         // Output nonce field
-        Crypto::showNonceField(
+        echo Crypto::getNonceField(
             $this->nonceKey,
             $nonce
         );
 
         // Generate fields
         foreach ($this->inputs as $input) {
-            echo $input->getMarkup($request);
+            echo $input->show();
         }
         
         // Closeup form

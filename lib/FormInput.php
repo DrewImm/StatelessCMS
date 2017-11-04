@@ -22,10 +22,35 @@ class FormInput {
     public $readonly; /**< If the field should be read-only */
 
     /**
-     * @brief Output the input markup to the current output buffer
-     * @param Request $request Request object to get form data from
+     * @brief Construct a new FormInput object
+     * @param string $label Label for the input
+     * @param string $slug Input slug (name)
+     * @param string $type Input type - i.e. "text", "textarea", "visual",
+     *  "toggle".  Default is "text"
+     * @param boolean $value Input current value.  Default is empty
+     * @param boolean $defaultValue Input default value.  Default is empty
+     * @param array $attributes Key/value pairs for the input.  Default is empty
      */
-    public function show($request) {
+    public function __construct(
+        $label,
+        $slug,
+        $type = "text",
+        $value = false,
+        $defaultValue = false,
+        $attributes = array()
+    ) {
+        $this->label = $label;
+        $this->slug = $slug;
+        $this->type = $type;
+        $this->value = $value;
+        $this->defaultValue = $defaultValue;
+        $this->attributes = $attributes;
+    }
+
+    /**
+     * @brief Output the input markup to the current output buffer4
+     */
+    public function show() {
         $attributes = "";
 
         // Convert "toggle" field to normal checkbox
@@ -39,8 +64,8 @@ class FormInput {
         }
 
         // Check for submission value
-        if ($this->hasValue($request)) {
-            $this->value = $this->getValue($request);
+        if ($this->hasValue()) {
+            $this->value = $this->getValue();
         }
 
         // Check value
@@ -182,25 +207,25 @@ class FormInput {
 
     /**
      * @brief Check if the input has value in a request
-     * @param Request $request The request to check
      * @return boolean `true` if the input has value, otherwise `false`
      */
-    public function hasValue($request) {
+    public function hasValue() {
+        $payload = Request::getPayload();
+
         return (
-            isset($request->payload) &&
-            isset($request->payload[$this->slug])
+            !empty($payload) &&
+            isset($payload[$this->slug])
         );
     }
 
     /**
      * @brief Get the input field's value from a request
-     * @param Request $request The request to get the value from
      * @return mixed Returns the value from the array, or `false` if not set
      */
-    public function getValue($request) {
+    public function getValue() {
         // Check if the request has the value
-        if ($this->hasValue($request)) {
-            return $request->payload[$this->slug];
+        if ($this->hasValue()) {
+            return Request::getPayload()[$this->slug];
         }
         else {
             return false;
@@ -209,27 +234,26 @@ class FormInput {
 
     /**
      * @brief Check if the input is valid
-     * @param Request $request The request to get the value from
      * @return boolean Returns if the input field is valid
      */
-    public function isValid($request) {
+    public function isValid() {
         // Check if it's a button
         if ($this->type === "submit" || $this->type === "button") {
             return true;
         }
 
         // If not required and not filled out, it is valid
-        if (!$this->required && empty($this->getValue($request))) {
+        if (!$this->required && empty($this->getValue())) {
             return "This field is required.";
         }
 
         // At this point, if it has no value, it is not valid
-        if (!$this->hasValue($request)) {
+        if (!$this->hasValue()) {
             return "This field was not found.";
         }
 
         // Pull the value and the length
-        $value = $this->getValue(request);
+        $value = $this->getValue();
 
         // String checks
         if (is_string($value)) {

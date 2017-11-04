@@ -3,107 +3,191 @@
 namespace Stateless;
 
 /**
- * Request is a class that holds data about the current http request
+ * @brief Request is a class that holds data about the current http request
  */
 class Request {
-    public $path; /**< string Url path */
-    public $dirs; /**< array Array of directories in path, including the ending file */
-    public $subdomain; /**< string The first subdomain that is not www. */
-    public $domain; /**< string The full domain */
-    public $method; /**< string The request method ("GET", "POST", "DELETE", etc) */
-    public $payload; /**< array Payload sent with the request */
-    public $headers; /**< array Array of headers sent with the request */
-    public $token; /**< string The bearer token pulled from the Authorization header */
+    protected static $path; /**< string Url path */
+    protected static $dirs; /**< array Array of directories in path, including the ending file */
+    protected static $domain; /**< string The full domain */
+    protected static $domains; /**< array The domains as an array */
+    protected static $subdomain; /**< string The first subdomain that is not www. */
+    protected static $method; /**< string The request method ("GET", "POST", "DELETE", etc) */
+    protected static $payload; /**< array Payload sent with the request */
+    protected static $headers; /**< array Array of headers sent with the request */
+    protected static $token; /**< string The bearer token pulled from the Authorization header */
 
     /**
-     * @brief Construct a request object
+     * @brief Get path from the url
+     * @return string Returns the url path
      */
-    public function __construct() {
-        $this->pull();
+    public static function getPath() {
+        if (!isset(Request::$path)) {
+            Request::$path = filter_input(
+                INPUT_SERVER,
+                "REQUEST_URI",
+                FILTER_SANITIZE_URL
+            );
+
+            // Remove query string from path
+            $i = strpos(Request::$path, "?");
+            if ($i !== false) {
+                Request::$path = substr(Request::$path, 0, $i);
+            }
+
+            // Remove trailing slash
+            Request::$path = preg_replace("{/$}", "", Request::$path);
+        }
+
+        return Request::$path;
+    }
+    
+    /**
+     * @brief Get the path directories
+     * @return array Returns an array of the path directories
+     */
+    public static function getDirs() {
+        if (!isset(Request::$dirs)) {
+            // Explode path
+            Request::$dirs = explode("/", Request::getPath());
+            
+            // Remove empty
+            $nDirs = count(Request::$dirs);
+            for ($i = 0; $i < $nDirs; $i++) {
+                if ($i === 0 && empty(Request::$dirs[$i])) {
+                    unset(Request::$dirs[$i]);
+                }
+            }
+    
+            Request::$dirs = array_values(Request::$dirs);
+        }
+
+        return Request::$dirs;
     }
 
     /**
-     * @brief Pull the current request
+     * @brief Get the domain
+     * @return string Returns the domain as a string
      */
-    public static function pull() {
-        // Pull path
-        $this->path = filter_input(
-            INPUT_SERVER,
-            "REQUEST_URI",
-            FILTER_SANITIZE_URL
-        );
-
-        // Remove query string from path
-        $i = strpos($this->path, "?");
-        if ($i !== false) {
-            $this->path = substr($this->path, 0, $i);
+    public static function getDomain() {
+        if (!isset(Request::$domain)) {
+            // Pull domains
+            Request::$domain = filter_input(
+                INPUT_SERVER,
+                "SERVER_NAME",
+                FILTER_SANITIZE_URL
+            );
         }
 
-        // Remove trailing slash
-        $this->path = preg_replace("{/$}", "", $this->path);
+        return Request::$domain;
+    }
 
-        // Explode path
-        $this->dirs = explode("/", $this->path);
-        
-        $nDirs = count($this->dirs);
-        for ($i = 0; $i < $nParts; $i++) {
-            if ($i === 0 && empty($this->dirs[$i])) {
-                unset($this->dirs[$i]);
+    /**
+     * @brief Get subdomains and domains
+     * @return array Returns the domains as an array
+     */
+    public static function getDomains() {
+        if (!isset(Request::$domains)) {
+            Request::$domains = explode(".", Request::getDomain());
+        }
+
+        return Request::$domains;
+    }
+
+    /**
+     * @brief Get the first subdomain that isnt "www"
+     * @return string Returns the subdomain, or the main domain if none exist
+     */
+    public static function getSubdomain() {
+        if (!isset(Request::$subdomain)) {
+            $domains = Request::getDomains();
+            Request::$subdomain = reset($domains);
+            
+            while (Request::$subdomain === "www") {
+                Request::$subdomain = next($domains);
             }
         }
 
-        $this->dirs = array_values($this->dirs);
+        return Request::$subdomain;
+    }
 
-        // Pull domains
-        $this->domain = filter_input(
-            INPUT_SERVER,
-            "SERVER_NAME",
-            FILTER_SANITIZE_URL
-        );
-
-        $this->domains = explode(".", $this->domain);
-        $this->subdomain = reset($this->domains);
+    /**
+     * @brief Get the request method
+     * @return string Returns the request method
+     */
+    public static function getMethod() {
+        if (!isset(Request::$method)) {
+            // Pull method
+            Request::$method = filter_input(
+                INPUT_SERVER,
+                "SERVER_METHOD",
+                FILTER_SANITIZE_STRING
+            );
+    
+            Request::$method = strtoupper(Request::$method);
+        }
         
-        while ($this->subdomain === "www") {
-            $this->subdomain = next($this->domains);
+        return Request::$method;
+    }
+
+    /**
+     * @brief Get the payload
+     * @return array Returns the payload as an array
+     */
+    public static function getPayload() {
+        if (!isset(Request::$payload)) {
+            // Pull payload
+            if (Request::getMethod() !== "GET") {
+                Request::$payload = file_get_contents("php://input");
+                Request::$payload = (array)json_decode(Request::$payload);
+            }
+            else if (!empty($_GET)) {
+                Request::$payload = $_GET;
+            }
         }
 
-        // Pull method
-        $this->method = filter_input(
-            INPUT_SERVER,
-            "SERVER_METHOD",
-            FILTER_SANITIZE_STRING
-        );
+        return Request::$payload;
+    }
 
-        $this->method = strtoupper($this->method);
-
-        // Pull payload
-        if ($this->method !== "GET") {
-            $this->payload = file_get_contents("php://input");
-            $this->payload = (array)json_decode($this->payload);
-        }
-        else if (!empty($_GET)) {
-            $this->payload = $_GET;
+    /**
+     * @brief Get the headers
+     * @return mixed Returns the headers as an array, or false if cannot access
+     */
+    public static function getHeaders() {
+        if (!isset(Request::$headers)) {
+            // Pull headers
+            if (function_exists("apache_request_headers")) {
+                Request::$headers = apache_request_headers();
+            }
         }
 
-        // Pull headers
-        if (function_exists("apache_request_headers")) {
-            $this->headers = apache_request_headers();
-        }
+        return Request::$headers;
+    }
 
-        // Pull bearer
-        if (!empty($this->headers) && isset($this->headers["Authorization"])) {
-            $header = $this->headers["Authorization"];
-            $this->token = null;
+    /**
+     * @brief Get the bearer token from the authentication header
+     * @return mixed Returns the token as a string, or false if cannot access
+     */
+    public static function getToken() {
+        if (!isset(Request::$token)) {
+            // Pull headers
+            $headers = Request::getHeaders();
 
-            if (!empty($header)) {
-                try {
-                    list($this->token) = sscanf($header, "Bearer %s");
-                }
-                catch (\Exception $e) {
-                    $this->token = null;
+            // Pull bearer
+            if (!empty($headers) && isset($headers["Authorization"])) {
+                $header = $headers["Authorization"];
+                Request::$token = null;
+    
+                if (!empty($header)) {
+                    try {
+                        list(Request::$token) = sscanf($header, "Bearer %s");
+                    }
+                    catch (\Exception $e) {
+                        Request::$token = null;
+                    }
                 }
             }
         }
+
+        return Request::$token;
     }
 }

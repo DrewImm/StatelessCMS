@@ -11,7 +11,7 @@ class Menu {
 
     /**
      * @brief Create a new Menu
-     * @param array $items Array of items
+     * @param array $items Array of MenuItem or MenuIcon objects
      * @param array $attributes Key/value pairs to attach to the tag
      */
     public function __construct($items, $attributes) {

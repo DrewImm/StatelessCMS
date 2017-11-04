@@ -2,7 +2,7 @@
 
 namespace Stateless;
 
-defined("NONCE_TIME_LENGTH") or define("NONCE_TIME_LENGTH", 10);
+if (!defined("NONCE_TIME_LENGTH")) define("NONCE_TIME_LENGTH", 10);
 
 /**
  * @brief Create and verify nonces and other cryptography strings
@@ -83,9 +83,14 @@ class Crypto {
         $strlen = strlen($str);
         $saltLen = strlen($salt);
 
-        return (
-            substr_compare($str, $salt, $strlen-$saltLen, $saltLen) === 0
-        );
+        if ($str && $salt) {
+            return (
+                substr_compare($str, $salt, $strlen-$saltLen, $saltLen) === 0
+            );
+        }
+        else {
+            return false;
+        }
     }
 
     /**
@@ -98,9 +103,14 @@ class Crypto {
     public static function checkPepper($str, $uuid, $pepperLength) {
         $pepper = Crypto::pepper("", $uuid, $pepperLength);
 
-        return (
-            substr_compare(substr($str, 0, $pepperLength), $pepper, 0) === 0
-        );
+        if ($str && $pepper) {
+            return (
+                substr_compare(substr($str, 0, $pepperLength), $pepper, 0) === 0
+            );
+        }
+        else {
+            return false;
+        }
     }
     
     /**
@@ -369,7 +379,7 @@ class Crypto {
         $nonce = substr($nonce, $timeLen);
 
         // Check timestamp
-        if ($time > $expires) {
+        if ($time >= $expires) {
             return false;
         }
 
