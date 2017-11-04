@@ -28,13 +28,21 @@ class Database {
     public function __construct(
         $server, $username, $password, $dbname, $prefix, $charset = "utf8"
     ) {
+        $this->server = $server;
+        $this->username = $username;
+        $this->password = $password;
+        $this->dbname = $dbname;
+        $this->prefix = $prefix;
+        $this->charset = $charset;
+        $this->isActive = false;
+
         $this->connect(
-            $server,
-            $username,
-            $password,
-            $dbname,
-            $prefix,
-            $charset
+            $this->server,
+            $this->username,
+            $this->password,
+            $this->dbname,
+            $this->prefix,
+            $this->charset
         );
     }
         
@@ -48,17 +56,9 @@ class Database {
      * @param string $charset Character set to use.  Default is `utf8`
      * @return mixed Returns $this on success, or false on error.
      */
-    public static function connect(
+    public function connect(
         $server, $username, $password, $dbname, $prefix, $charset = "utf8"
     ) {
-        $this->server = $server;
-        $this->username = $username;
-        $this->password = $password;
-        $this->dbname = $dbname;
-        $this->prefix = $prefix;
-        $this->charset = $charset;
-        $this->isActive = false;
-
         // Build PDO object
         $dsn = "mysql:host=$this->server;" .
             "dbname=$this->dbname;" .
@@ -92,7 +92,7 @@ class Database {
      * @brief Check if the database connection is active
      * @return boolean Returns true if active, otherwise false
      */
-    public static function isActive() {
+    public function isActive() {
         return $this->isActive;
     }
 
@@ -100,7 +100,7 @@ class Database {
      * @brief Get information about the last error which occurred
      * @return string Description of last database error
      */
-    public static function error() {
+    public function error() {
         return $this->conn->errorInfo();
     }
 
@@ -109,7 +109,7 @@ class Database {
      * @param string $query The sql query to run
      * @return mixed Returns results on success, false on failure
      */
-    public static function query($query) {
+    public function query($query) {
         // Execute the statement and return the result
         return $this->conn->query($query);
     }
@@ -121,7 +121,7 @@ class Database {
      *   empty
      * @return mixed Returns results on success, false on failure
      */
-    public static function preparedQuery($query, $values = array()) {
+    public function preparedQuery($query, $values = array()) {
         $result = $this->conn->prepare($query);
         $result->execute($values);
 
@@ -135,7 +135,7 @@ class Database {
      * @param array $columns Array of DatabaseColumn objects
      * @return mixed Returns if the table was created successfully
      */
-    public static function createTable($table, $columns) {
+    public function createTable($table, $columns) {
         $table = $this->prefix . $table;
         $query = "CREATE TABLE IF NOT EXISTS `$table` (";
         $key = false;
@@ -195,7 +195,7 @@ class Database {
      * @param string $table Name of the table to query
      * @return mixed Returns the number of rows, or false on failure
      */
-    public static function nRows($table) {
+    public function nRows($table) {
         $table = $this->prefix . $table;
 
         $results = $this->conn->query(
@@ -212,7 +212,7 @@ class Database {
      * @return mixed Returns the matching rows as an associative array, or
      *   false on failure.
      */
-    public static function select($query) {
+    public function select($query) {
         $rows = false;
         $result = $this->preparedQuery($query);
 
@@ -234,7 +234,7 @@ class Database {
      * @return mixed Returns the matching rows as an associative array, or
      *   false on failure.
      */
-    public static function preparedSelect($query, $where = array()) {
+    public function preparedSelect($query, $where = array()) {
         $rows = false;
         $result = $this->preparedQuery($query, $where);
 
@@ -261,7 +261,7 @@ class Database {
      * @return mixed Returns the matching rows as key/value pairs, or false on
      *   failure.
      */
-    public static function selectBy(
+    public function selectBy(
         $table,
         $where = array(),
         $append = false,
@@ -311,7 +311,7 @@ class Database {
      * @param string $idKey The key of the id column for this table
      * @return mixed Returns the highest id, or 1 if no rows exist
      */
-    public static function resetId($table, $idKey = "id") {
+    public function resetId($table, $idKey = "id") {
         $table = $this->prefix . $table;
         $query = "SELECT @max := MAX(" . $idKey . ")+ 1 FROM " . $table . ";";
         $id = $this->query($query);
@@ -347,7 +347,7 @@ class Database {
      * @param array $payload Key/value pairs of data to insert
      * @return mixed Returns non-false on success, false on failure
      */
-    public static function insert($table, $payload) {
+    public function insert($table, $payload) {
         $table = $this->prefix . $table;
         $query = "INSERT INTO " . $table . " (";
 
@@ -381,7 +381,7 @@ class Database {
      * @brief Get the last insert Id
      * @return integer Returns the last insert Id, or 0 if none exist
      */
-    public static function lastInsertId() {
+    public function lastInsertId() {
         return $this->conn->lastInsertId();
     }
 
@@ -392,7 +392,7 @@ class Database {
      * @param array $where Key/value pairs to search by
      * @return mixed Returns non-false on success, or false on error
      */
-    public static function update($table, $payload, $where) {
+    public function update($table, $payload, $where) {
         $table = $this->prefix . $table;
         $query = "UPDATE " . $table . " SET ";
 
@@ -429,7 +429,7 @@ class Database {
      * @param array $where Key/value pairs to search for
      * @return mixed Returns non-false on success, or false on error
      */
-    public static function deleteBy($table, $where) {
+    public function deleteBy($table, $where) {
         $table = $this->prefix . $table;
         $query = "DELETE FROM " . $table;
 
