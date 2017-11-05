@@ -327,6 +327,9 @@ class Crypto {
             $cipherOptions
         );
 
+        // Encode the nonce
+        $cipher = base64_encode($cipher);
+
         // Return the nonce
         return $cipher;
     }
@@ -357,6 +360,9 @@ class Crypto {
         $cipherMethod = "aes-256-gcm",
         $cipherOptions = 0
     ) {
+        // Decode
+        $nonce = base64_decode($nonce);
+
         // Decrypt
         $nonce = Crypto::decrypt(
             $nonce,
