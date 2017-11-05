@@ -20,6 +20,9 @@ class Form {
     public $pepperLength; /**< Length of the pepper to apply to the nonce.  Default is 2 characters */
     public $nonceKey; /**< The key for the hidden nonce field.  Default is "__nonce" */
 
+    private $submitted;
+    private $validated;
+
     /**
      * @brief Construct a new Form
      * @param string $name Form name to validate submission
@@ -38,9 +41,9 @@ class Form {
      *  "__nonce"
      */
     public function __construct(
-        $name,
-        $inputs,
-        $cipherKey,
+        $name = "",
+        $inputs = array(),
+        $cipherKey = "",
         $method = "POST",
         $action = "",
         $uuid = 0,
@@ -61,6 +64,13 @@ class Form {
         $this->salt = $salt;
         $this->pepperLength = $pepperLength;
         $this->nonceKey = $nonceKey;
+
+        if (method_exists($this, "init")) {
+            $this->init();
+        }
+
+        $this->isSubmit();
+        $this->isValid();
     }
 
     /**
@@ -68,12 +78,26 @@ class Form {
      * @return boolean Returns if a submission exists in the request
      */
     public function isSubmit() {
-        $payload = Request::getPayload();
-        // Checck for the nonce key in the request payload
-        return (
-            !empty($payload) &&
-            array_key_exists($this->nonceKey, $payload)
-        );
+        if (!isset($this->submitted)) {
+            $payload = Request::getPayload();
+            // Checck for the nonce key in the request payload
+            if (
+                !empty($payload) &&
+                array_key_exists($this->nonceKey, $payload)
+            ) {
+                // Run callback
+                if (method_exists($this, "onSubmit")) {
+                    $this->onSubmit();
+                }
+    
+                $this->submitted = true;
+            }
+            else {
+                $this->submitted = false;
+            }
+        }
+
+        return $this->submitted;
     }
 
     /**
@@ -81,39 +105,48 @@ class Form {
      * @return boolean Returns if the form submission is valid
      */
     public function isValid() {
-        // Check for form submission
-        if ($this->isSubmit()) {
-            // Validate the nonce
-            $valid = Crypto::validateNonce(
-                Request::getPayload()[$this->nonceKey],
-                $this->name,
-                $this->uuid,
-                $this->obid,
-                $this->ttl,
-                $this->salt,
-                $this->pepperLength,
-                $this->cipherKey
-            );
-
-            // Return if not valid
-            if (!$valid) {
-                return false;
-            }
-
-            // Check each input for validity
-            foreach ($this->inputs as $input) {
-                if (!$input->isValid()) {
-                    return false;
+        if (!isset($this->validated)) {
+            // Check for form submission
+            if ($this->isSubmit()) {
+                // Validate the nonce
+                $valid = Crypto::validateNonce(
+                    Request::getPayload()[$this->nonceKey],
+                    $this->name,
+                    $this->uuid,
+                    $this->obid,
+                    $this->ttl,
+                    $this->salt,
+                    $this->pepperLength,
+                    $this->cipherKey
+                );
+    
+                // Return if not valid
+                if (!$valid) {
+                    $this->validated = false;
                 }
+    
+                // Check each input for validity
+                foreach ($this->inputs as $input) {
+                    if (!$input->isValid()) {
+                        $this->validated = false;
+                    }
+                }
+    
+                // Run callback
+                if (method_exists($this, "onValid")) {
+                    $this->onValid();
+                }
+    
+                // Checks passed
+                $this->validated = true;
             }
+            else {
+                // No submission, not valid
+                $this->validated = false;
+            }
+        }
 
-            // Checks passed
-            return true;
-        }
-        else {
-            // No submission, not valid
-            return false;
-        }
+        return $this->validated;
     }
 
     /**
