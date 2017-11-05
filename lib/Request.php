@@ -119,7 +119,7 @@ class Request {
             // Pull method
             Request::$method = filter_input(
                 INPUT_SERVER,
-                "SERVER_METHOD",
+                "REQUEST_METHOD",
                 FILTER_SANITIZE_STRING
             );
     
@@ -137,8 +137,29 @@ class Request {
         if (!isset(Request::$payload)) {
             // Pull payload
             if (Request::getMethod() !== "GET") {
-                Request::$payload = file_get_contents("php://input");
-                Request::$payload = (array)json_decode(Request::$payload);
+                $payload = file_get_contents("php://input");
+                $headers = Request::getHeaders();
+                $ctype = false;
+                
+                // Check the content type
+                if ($headers && array_key_exists("Content-Type", $headers)) {
+                    $ctype = $headers["Content-Type"];
+                }
+
+                // JSON
+                if ($ctype == "application/json" || $ctype == "application/javascript") {
+                    $json = (array)json_decode($payload);
+                    
+                    if (json_last_error() == JSON_ERROR_NONE) {
+                        $payload = $json;
+                    }
+                }
+                // POST data
+                else if (Request::getMethod() === "POST") {
+                    $payload = $_POST;
+                }
+
+                Request::$payload = $payload;
             }
             else if (!empty($_GET)) {
                 Request::$payload = $_GET;
