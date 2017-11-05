@@ -78,11 +78,9 @@ class Form {
 
     /**
      * @brief Check if the form's nonce and data is valid
-     * @param reference &$iv Reference to openssl $iv
-     * @param reference &$tag Reference to openssl $tag
      * @return boolean Returns if the form submission is valid
      */
-    public function isValid(&$iv, &$tag) {
+    public function isValid() {
         // Check for form submission
         if ($this->isSubmit()) {
             // Validate the nonce
@@ -94,9 +92,7 @@ class Form {
                 $this->ttl,
                 $this->salt,
                 $this->pepperLength,
-                $this->cipherKey,
-                $iv,
-                $tag
+                $this->cipherKey
             );
 
             // Return if not valid
@@ -141,10 +137,8 @@ class Form {
 
     /**
      * @brief Output the form markup to the current output buffer
-     * @param reference &$iv Reference to openssl $iv
-     * @param reference &$tag Reference to openssl $tag
      */
-    public function show(&$iv, &$tag) {
+    public function show() {
         // Output form tag
         echo 
             "<form method=\"" . $this->method . "\"" .
@@ -160,9 +154,7 @@ class Form {
             $this->ttl,
             $this->salt,
             $this->pepperLength,
-            $this->cipherKey,
-            $iv,
-            $tag
+            $this->cipherKey
         );
 
         // Output nonce field

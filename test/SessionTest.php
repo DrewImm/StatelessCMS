@@ -15,34 +15,22 @@ if (!defined("NONCE_TIME_LENGTH")) define("NONCE_TIME_LENGTH", 10);
  */
 final class SessionTest extends TestCase {
     public function testCreate() {
-        global $iv;
-        global $tag;
+        Session::create(
+            CIPHER_KEY,
+            uuid,
+            ttl,
+            salt,
+            pepperLen,
+            prefix
+        );
 
-        if ($iv = Crypto::getIv()) {
-            Session::create(
-                CIPHER_KEY,
-                $iv,
-                $tag,
-                uuid,
-                ttl,
-                salt,
-                pepperLen,
-                prefix
-            );
-    
-            $this->assertTrue(Session::isActive(prefix));
-        }
+        $this->assertTrue(Session::isActive(prefix));
     }
 
     public function testIsValid() {
-        global $iv;
-        global $tag;
-
         $this->assertTrue(
             Session::isValid(
                 CIPHER_KEY,
-                $iv,
-                $tag,
                 uuid,
                 ttl,
                 salt,
@@ -53,9 +41,6 @@ final class SessionTest extends TestCase {
     }
 
     public function testGetUserId() {
-        global $iv;
-        global $tag;
-
         $this->assertTrue(
             Session::getUserId(prefix) >= 0
         );

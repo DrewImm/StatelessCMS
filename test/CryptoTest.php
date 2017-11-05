@@ -122,27 +122,18 @@ final class CryptoTest extends TestCase {
     }
 
     public function testEncryptDecrypt() {
-        if ($iv = Crypto::getIv()) {
-            $encrypted = Crypto::encrypt(
-                in,
-                CIPHER_KEY,
-                $iv,
-                $tag
-            );
+        $encrypted = Crypto::encrypt(
+            in,
+            CIPHER_KEY
+        );
 
-            $this->assertEquals(
-                Crypto::decrypt(
-                    $encrypted,
-                    CIPHER_KEY,
-                    $iv,
-                    $tag
-                ),
-                in
-            );
-        }
-        else {
-            $this->assertTrue(false);
-        }
+        $this->assertEquals(
+            Crypto::decrypt(
+                $encrypted,
+                CIPHER_KEY
+            ),
+            in
+        );
     }
 
     public function testNonceTime() {
@@ -153,64 +144,48 @@ final class CryptoTest extends TestCase {
     }
 
     public function testNonce() {
-        if ($iv = Crypto::getIv()) {
-            $nonce = Crypto::nonce(
-                "test-nonce",
-                uuid,
-                0,
-                ttl,
-                salt,
-                pepperLen,
-                CIPHER_KEY,
-                $iv,
-                $tag
-            );
-            $valid = Crypto::validateNonce(
-                $nonce,
-                "test-nonce",
-                uuid,
-                0,
-                ttl,
-                salt,
-                pepperLen,
-                CIPHER_KEY,
-                $iv,
-                $tag
-            );
+        $nonce = Crypto::nonce(
+            "test-nonce",
+            uuid,
+            0,
+            ttl,
+            salt,
+            pepperLen,
+            CIPHER_KEY
+        );
+        $valid = Crypto::validateNonce(
+            $nonce,
+            "test-nonce",
+            uuid,
+            0,
+            ttl,
+            salt,
+            pepperLen,
+            CIPHER_KEY
+        );
 
-            $this->assertTrue($valid);
-        }
-        else {
-            $this->assertTrue(false);
-        }
+        $this->assertTrue($valid);
     }
 
     public function testGetNonceField() {
-        if ($iv = Crypto::getIv()) {
-            $nonce = Crypto::nonce(
-                "test-nonce",
-                uuid,
-                0,
-                3600,
-                salt,
-                pepperLen,
-                CIPHER_KEY,
-                $iv,
-                $tag
-            );
-            $field = Crypto::getNonceField(
-                "__nonce",
-                $nonce
-            );
-    
-            $this->assertTrue(
-                is_string($field) &&
-                strlen($field) > 10
-            );
-        }
-        else {
-            $this->assertTrue(false);
-        }
+        $nonce = Crypto::nonce(
+            "test-nonce",
+            uuid,
+            0,
+            3600,
+            salt,
+            pepperLen,
+            CIPHER_KEY
+        );
+        $field = Crypto::getNonceField(
+            "__nonce",
+            $nonce
+        );
+
+        $this->assertTrue(
+            is_string($field) &&
+            strlen($field) > 10
+        );
     }
 
 }

@@ -20,8 +20,6 @@ class Session {
     /**
      * @brief Create a new session
      * @param string $cipherKey Cipher key to encrypt the nonce field
-     * @param reference &$cipherIv Reference to openssl $iv
-     * @param reference &$cipherTag Reference to openssl $tag
      * @param integer $uuid User ID to associate the nonce with.  Default is 0
      * @param integer $ttl Time to live (days).  Default is 7
      * @param string $salt String to salt the nonce with.
@@ -30,8 +28,6 @@ class Session {
      */
     public static function create(
         $cipherKey,
-        &$cipherIv,
-        &$cipherTag,
         $uuid = 0,
         $ttl = 7,
         $salt = "_",
@@ -62,9 +58,7 @@ class Session {
             $expires,
             $salt,
             $pepperLength,
-            $cipherKey,
-            $cipherIv,
-            $cipherTag
+            $cipherKey
         );
 
         // Create the session object
@@ -108,8 +102,6 @@ class Session {
     /**
      * @brief Check if the session is active and valid
      * @param string $cipherKey Cipher key to encrypt the nonce field
-     * @param reference &$cipherIv Reference to openssl $iv
-     * @param reference &$cipherTag Reference to openssl $tag
      * @param integer $uuid User id to validate.  Default is 0
      * @param integer $ttl Time to live of the session (days).  Default is 7
      * @param string $salt Salt to append to the nonce.  Default is "$"
@@ -119,8 +111,6 @@ class Session {
      */
     public static function isValid(
         $cipherKey,
-        &$cipherIv,
-        &$cipherTag,
         $uuid = 0,
         $ttl = 7,
         $salt = "$",
@@ -151,9 +141,7 @@ class Session {
                 $ttl,
                 $salt,
                 $pepperLength,
-                $cipherKey,
-                $cipherIv,
-                $cipherTag
+                $cipherKey
             );
 
             // Get stored user agent and address
