@@ -1,0 +1,1 @@
+clear && vendor/bin/phpunit test --bootstrap autoload.php --stderr

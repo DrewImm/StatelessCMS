@@ -3,7 +3,12 @@
 .vscode/
 
 # Doc
-doc/
+/doc/
 
 # Package
-vendor/
+/vendor/
+
+# Build
+/build.log
+/build/
+/temp/
