@@ -5,6 +5,7 @@
  * @package StatelessCMS
  * @version 0.0.1
  */
+session_start();
 
 /**
  * @brief Autoload module files

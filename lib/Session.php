@@ -2,8 +2,6 @@
 
 namespace Stateless;
 
-session_start();
-
 /**
  * @brief A Session tracks the php session
  */
