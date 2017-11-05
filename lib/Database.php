@@ -21,12 +21,12 @@ class Database {
      * @param string $username Username to connect as
      * @param string $password Password to connect with
      * @param string $dbname Database name to connect to
-     * @param string $prefix Prefix to prepend to database table names
+     * @param string $prefix Prefix to prepend to database table names.
      * @param string $charset Character set to use.  Default is `utf8`
      * @return mixed Returns $this on success, or false on error.
      */
     public function __construct(
-        $server, $username, $password, $dbname, $prefix, $charset = "utf8"
+        $server, $username, $password, $dbname, $prefix = "", $charset = "utf8"
     ) {
         $this->server = $server;
         $this->username = $username;
