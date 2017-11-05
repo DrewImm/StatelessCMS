@@ -277,14 +277,6 @@ class FormInput {
                     " characters."
                 ;
             }
-
-            // Validate regex
-            if (!Regex::validate($value, $this->accepts)) {
-                return
-                    "This field does not match the format for " .
-                    $this->accepts
-                ;
-            }
         }
 
         // Numerical checks
