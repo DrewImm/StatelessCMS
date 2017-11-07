@@ -172,6 +172,10 @@ class FormInput {
                 echo "</select>";
             break;
 
+            case "html":
+                echo $this->value;
+            break;
+
             default:
                 // Output standard input
                 echo sprintf(
