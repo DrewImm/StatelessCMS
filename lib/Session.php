@@ -90,7 +90,7 @@ class Session {
      * @param string $prefix The session prefix to check for
      * @return boolean Returns if the session is active (but maybe not valid)
      */
-    public static function isActive($prefix) {
+    public static function isActive($prefix = "__") {
         return (
             isset($_SESSION) &&
             !empty($_SESSION[$prefix . "n"])
@@ -177,7 +177,7 @@ class Session {
      * @param $prefix Session prefix to fetch the session $uuid from
      * @return mixed Returns the user ID or false on failure
      */
-    public static function getUserId($prefix) {
+    public static function getUserId($prefix = "__") {
         if (
             Session::isActive($prefix) &&
             !empty($_SESSION[$prefix . "u"])

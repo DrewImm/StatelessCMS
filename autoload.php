@@ -3,7 +3,7 @@
  * autoload.php
  * 
  * @package StatelessCMS
- * @version 0.0.2
+ * @version 0.0.3
  */
 session_start();
 
