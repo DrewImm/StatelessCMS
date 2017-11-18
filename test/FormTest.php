@@ -14,7 +14,6 @@ define("CIPHER_KEY", "lKKL2UuzmHKdBB1vHDFzNzCiTei6jWOTDdE7tJPPMGYQpnohGQUhVduwZT
  */
 final class FormTest extends TestCase {
     public function testConstruct() {
-        global $form;
         $form = new Form(
             "test-form",
             [
@@ -28,18 +27,32 @@ final class FormTest extends TestCase {
     }
 
     public function testIsSubmit() {
-        global $form;
+        $form = new Form(
+            "test-form",
+            [
+                new FormInput("Name", "name"),
+                new FormInput("Email", "email")
+            ],
+            CIPHER_KEY
+        );
 
         $this->assertFalse($form->isSubmit());
     }
 
     public function testShow() {
-        global $form;
-        global $iv;
-        global $tag;
+        $form = new Form(
+            "test-form",
+            [
+                new FormInput("Name", "name"),
+                new FormInput("Email", "email")
+            ],
+            CIPHER_KEY
+        );
 
         if ($iv = Crypto::getIv()) {
             ob_start();
+            $tag = null;
+
             $form->show($iv, $tag);
             $markup = ob_get_contents();
             
@@ -53,15 +66,42 @@ final class FormTest extends TestCase {
     }
 
     public function testIsValid() {
-        global $form;
-        global $iv;
-        global $tag;
+        $form = new Form(
+            "test-form",
+            [
+                new FormInput("Name", "name"),
+                new FormInput("Email", "email")
+            ],
+            CIPHER_KEY
+        );
+
+        if ($iv = Crypto::getIv()) {
+            ob_start();
+            $tag = null;
+            $form->show($iv, $tag);
+            $markup = ob_get_contents();
+            
+            ob_end_clean();
+
+            $this->assertTrue(
+                !empty($markup) &&
+                strlen($markup) > 1
+            );
+        }
 
         $this->assertFalse($form->isValid($iv, $tag));
     }
 
     public function testGetValues() {
-        global $form;
+        $form = new Form(
+            "test-form",
+            [
+                new FormInput("Name", "name"),
+                new FormInput("Email", "email")
+            ],
+            CIPHER_KEY
+        );
+
         $values = $form->getValues();
 
         $this->assertFalse($values);

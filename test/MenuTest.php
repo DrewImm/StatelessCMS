@@ -10,8 +10,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class MenuTest extends TestCase {
     public function testCreateMenu() {
-        global $menu;
-
         $menu = new Menu(
             [
                 new MenuItem("Test", "/"),
@@ -26,7 +24,15 @@ final class MenuTest extends TestCase {
     }
 
     public function testShow() {
-        global $menu;
+        $menu = new Menu(
+            [
+                new MenuItem("Test", "/"),
+                new MenuIcon("fa-user", "/user", "Users", "top", ["class" => "icon"])
+            ],
+            [
+                "class" => "test-menu"
+            ]
+        );
 
         ob_start();
         $menu->show();

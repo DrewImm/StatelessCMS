@@ -9,8 +9,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class DatabaseTest extends TestCase {
     public function testConnect() {
-        global $db;
-
         $db = new Database(
             "localhost",
             "stateless",
@@ -23,27 +21,53 @@ final class DatabaseTest extends TestCase {
     }
 
     public function testIsActive() {
-        global $db;
+        $db = new Database(
+            "localhost",
+            "stateless",
+            "testpass1",
+            "stateless",
+            "s_"
+        );
 
         $this->assertTrue($db->isActive());
     }
 
     public function testError() {
         // Todo
-        global $db;
+        $db = new Database(
+            "localhost",
+            "stateless",
+            "testpass1",
+            "stateless",
+            "s_"
+        );
 
         $this->assertNotFalse($db->error());
     }
 
     public function testQuery() {
-        global $db;
+        $db = new Database(
+            "localhost",
+            "stateless",
+            "testpass1",
+            "stateless",
+            "s_"
+        );
+
         $result = $db->query("CREATE TABLE IF NOT EXISTS `s_test_make_table` (id INT NOT NULL);");
 
         $this->assertNotFalse($result);
     }
 
     public function testPreparedQuery() {
-        global $db;
+        $db = new Database(
+            "localhost",
+            "stateless",
+            "testpass1",
+            "stateless",
+            "s_"
+        );
+
         $result = $db->preparedQuery(
             "INSERT INTO `s_test_make_table` (id) VALUES (?);",
             [
@@ -55,7 +79,14 @@ final class DatabaseTest extends TestCase {
     }
 
     public function testCreateTable() {
-        global $db;
+        $db = new Database(
+            "localhost",
+            "stateless",
+            "testpass1",
+            "stateless",
+            "s_"
+        );
+
         $result = $db->createTable("test_create_table",
         [
             new DatabaseColumn("id", "int", true),
@@ -66,21 +97,42 @@ final class DatabaseTest extends TestCase {
     }
 
     public function testNRows() {
-        global $db;
+        $db = new Database(
+            "localhost",
+            "stateless",
+            "testpass1",
+            "stateless",
+            "s_"
+        );
+
         $result = $db->nRows("test_make_table");
 
         $this->assertNotFalse($db);
     }
 
     public function testSelect() {
-        global $db;
+        $db = new Database(
+            "localhost",
+            "stateless",
+            "testpass1",
+            "stateless",
+            "s_"
+        );
+
         $result = $db->select("SELECT * FROM `s_test_make_table`;");
 
         $this->assertTrue(!empty($result) && is_array($result));
     }
 
     public function testPreparedSelect() {
-        global $db;
+        $db = new Database(
+            "localhost",
+            "stateless",
+            "testpass1",
+            "stateless",
+            "s_"
+        );
+
         $result = $db->preparedSelect(
             "SELECT * FROM `s_test_make_table` WHERE id=:id",
             [
@@ -92,7 +144,14 @@ final class DatabaseTest extends TestCase {
     }
 
     public function testSelectBy() {
-        global $db;
+        $db = new Database(
+            "localhost",
+            "stateless",
+            "testpass1",
+            "stateless",
+            "s_"
+        );
+
         $result = $db->selectBy(
             "test_make_table",
             [
@@ -104,14 +163,28 @@ final class DatabaseTest extends TestCase {
     }
 
     public function testResetId() {
-        global $db;
+        $db = new Database(
+            "localhost",
+            "stateless",
+            "testpass1",
+            "stateless",
+            "s_"
+        );
+
         $result = $db->resetId("test_make_table", "id");
 
         $this->assertTrue($result >= 1);
     }
 
     public function testInsert() {
-        global $db;
+        $db = new Database(
+            "localhost",
+            "stateless",
+            "testpass1",
+            "stateless",
+            "s_"
+        );
+
         $result = $db->insert(
             "test_create_table",
             [
@@ -123,14 +196,35 @@ final class DatabaseTest extends TestCase {
     }
 
     public function testLastInsertId() {
-        global $db;
+        $db = new Database(
+            "localhost",
+            "stateless",
+            "testpass1",
+            "stateless",
+            "s_"
+        );
+
+        $result = $db->insert(
+            "test_create_table",
+            [
+                "name" => "40"
+            ]
+        );
+
         $result = $db->lastInsertId();
 
         $this->assertTrue($result >= 1);
     }
 
     public function testUpdate() {
-        global $db;
+        $db = new Database(
+            "localhost",
+            "stateless",
+            "testpass1",
+            "stateless",
+            "s_"
+        );
+
         $result = $db->update(
             "test_create_table",
             [
@@ -145,7 +239,14 @@ final class DatabaseTest extends TestCase {
     }
 
     public function testDeleteBy() {
-        global $db;
+        $db = new Database(
+            "localhost",
+            "stateless",
+            "testpass1",
+            "stateless",
+            "s_"
+        );
+
         $result1 = $db->deleteBy("test_create_table", []);
         $result2 = $db->deleteBy("test_make_table", []);
 
@@ -153,7 +254,14 @@ final class DatabaseTest extends TestCase {
     }
 
     public function testDropTables() {
-        global $db;
+        $db = new Database(
+            "localhost",
+            "stateless",
+            "testpass1",
+            "stateless",
+            "s_"
+        );
+
         $result1 = $db->query("DROP TABLE `s_test_create_table`");
         $result2 = $db->query("DROP TABLE `s_test_make_table`");
         

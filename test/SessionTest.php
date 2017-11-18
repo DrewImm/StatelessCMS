@@ -28,6 +28,15 @@ final class SessionTest extends TestCase {
     }
 
     public function testIsValid() {
+        Session::create(
+            CIPHER_KEY,
+            uuid,
+            ttl,
+            salt,
+            pepperLen,
+            prefix
+        );
+
         $this->assertTrue(
             Session::isValid(
                 CIPHER_KEY,
@@ -41,12 +50,30 @@ final class SessionTest extends TestCase {
     }
 
     public function testGetUserId() {
+        Session::create(
+            CIPHER_KEY,
+            uuid,
+            ttl,
+            salt,
+            pepperLen,
+            prefix
+        );
+
         $this->assertTrue(
             Session::getUserId(prefix) >= 0
         );
     }
 
     public function testDestroy() {
+        Session::create(
+            CIPHER_KEY,
+            uuid,
+            ttl,
+            salt,
+            pepperLen,
+            prefix
+        );
+        
         Session::destroy();
     
         $this->assertFalse(Session::isActive(prefix));
