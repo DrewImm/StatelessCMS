@@ -38,6 +38,12 @@ Than run the test script (from the StatelessCMS root directory):
 
 Tests should run cleanly without any warnings, failures, or exceptions.  Tests should run while debugging without stopping the debugger.
 
+### Build
+StatelessCMS contains an automatic build script if you would like to build or package it.
+```
+./script/build.sh
+```
+
 ## Coding Style
 If you are unsure of how something should be styled, StatelessCMS will always follow Google's styleguide for that language (or C in the case of C-based languages)
 Any code contributions must follow the appropriate styleguide.
