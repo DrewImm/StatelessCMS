@@ -1,0 +1,1 @@
+clear && phpunit test --bootstrap autoload.php --stderr
