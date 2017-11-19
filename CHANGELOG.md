@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.1.1] - 2017-11-19
+### Changed
+ - Build directory structure
+ - Readme to reflect new build directory structure
+
+### Removed
+ - install.sh
+ - Composer (was used for phpunit)
+
+### Fixed
+ - Examples in README.md
+
 ## [0.1.0] - 2017-11-18
 ### Added
  - Response singleton

@@ -46,7 +46,7 @@ Open public/index.php.  Insert the following code:
 <?php
 namespace Stateless;
 
-require_once("../lib/StatelessCMS/autoload.php");
+require_once("../lib/StatelessCMS.php");
 
 echo "Home";
 ```
@@ -81,6 +81,7 @@ Now we will create additional pages with clean urls.  Replace `index.php` with t
 ```php
 <?php
 namespace Stateless;
+require_once("../lib/StatelessCMS.php");
 
 switch (Request::getPath()) {
     case "/":

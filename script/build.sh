@@ -13,29 +13,37 @@ done <"$file"
 # Create build name
 BUILDNAME="StatelessCMS-"$VERSION;
 
-echo "Version: "$VERSION;
-echo "Build Name: "$BUILDNAME;
+echo "Version: "$VERSION
+echo "Build Name: "$BUILDNAME
 
 # Remove old temp directory
-echo -e;
-echo "Cleaning build directory...";
+echo -e
+echo "Cleaning build directory..."
 
-rm -rf temp build;
-mkdir -p temp;
+rm -rf temp
+mkdir -p temp
+
+# Move files
+cp -rf lib temp/StatelessCMS
+cp autoload.php temp/StatelessCMS.php
 
 # Zip
-echo "Creating archives...";
+echo "Creating archives..."
+cd temp
 
-zip -r temp/$BUILDNAME.zip lib autoload.php >> build.log
-tar -zcvf temp/$BUILDNAME.tar.gz lib autoload.php >> build.log
+zip -r $BUILDNAME.zip StatelessCMS.php StatelessCMS >> build.log
+tar -zcvf $BUILDNAME.tar.gz StatelessCMS.php StatelessCMS >> build.log
+
+cd ..
 
 # Move to build
-echo "Completing build...";
-mv temp build;
+echo "Completing build..."
+mv temp/$BUILDNAME.zip build
+mv temp/$BUILDNAME.tar.gz build
 
 # Remove build log
-echo "Cleaning up...";
+echo "Cleaning up..."
 rm -rf build.log
 
 # Done
-echo "Build Complete.";
+echo "Build Complete."
