@@ -96,7 +96,7 @@ switch (Request::getPath()) {
     break;
 
     default:
-        Response::addHeader(404);
+        Response::header(404);
         echo "Page not found.";
     break;
 
