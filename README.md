@@ -5,12 +5,21 @@ Headless content management system
 StatelessCMS is a headless PHP framework designed for creating database-driven PHP applications.
 
 ## Installation
+### Minimum Requirements
+Get a server running PHP 7.0 and a SQL database.
+*Note that apache is recommended, as Request::getHeaders() and Request::getToken() rely on apache_get_headers() as of v0.0.3*
+
+### Composer Install
+The easiest way to install StatelessCMS is to install with Composer:
+```
+composer require stateless-cms/stateless
+```
+
+### Web Download
 Download the latest release from [https://github.com/StatelessCMS/StatelessCMS/releases](https://github.com/StatelessCMS/StatelessCMS/releases).
 
+### Development
 If you would like the live development branch instead, download or clone from github.  [https://github.com/StatelessCMS/StatelessCMS.git](https://github.com/StatelessCMS/StatelessCMS.git)
-
-Get a server running PHP 7.0 and a relational database.
-*Note that apache is recommended, as Request::getHeaders() and Request::getToken() rely on apache_get_headers() as of v0.0.3*
 
 ## Setting up your first project
 Although you are free to use any directory structure you choose, the common structure for StatelessCMS is as follows.  For now, you can just create the public folder, index.php, and the lib folder.
@@ -31,22 +40,25 @@ Although you are free to use any directory structure you choose, the common stru
 |- test
     |- js
     |- php
-|- lib
-    |- StatelessCMS
+|- vendor
+    |- stateless-cms
+        |- stateless
 
 ```
 
 Look familiar?
-If you didn't already, unzip the StatelessCMS archive to lib/StatelessCMS.
+If you didn't already, install StatelessCMS to vendor/stateless-cms/stateless.
 
 ## Getting started
 Open public/index.php.  Insert the following code:
+
+*If you downloaded and installed StatelessCMS without using composer, change ../vendor/autoload.php to your StatelessCMS.php file*
 
 ```php
 <?php
 namespace Stateless;
 
-require_once("../lib/StatelessCMS.php");
+require_once("../vendor/autoload.php");
 
 echo "Home";
 ```
