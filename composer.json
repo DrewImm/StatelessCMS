@@ -1,0 +1,7 @@
+{
+    "name": "StatelessCMS",
+    "description": "Stateless Content Management System",
+    "require": {
+        "php": "^7.0"
+    }
+}
