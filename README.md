@@ -93,7 +93,7 @@ Now we will create additional pages with clean urls.  Replace `index.php` with t
 ```php
 <?php
 namespace Stateless;
-require_once("../lib/StatelessCMS.php");
+require_once("../vendor/autoload.php");
 
 switch (Request::getPath()) {
     case "/":
