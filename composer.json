@@ -1,6 +1,11 @@
 {
     "name": "stateless-cms/stateless",
     "description": "Stateless Content Management System",
+    "autoload": {
+        "psr-4": {
+            "Stateless\\": "StatelessCMS/"
+        }
+    },
     "require": {
         "php": "^7.0"
     }

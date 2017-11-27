@@ -12,9 +12,14 @@ class Response {
      *  Response header
      * @param boolean $exit If the script should exit after sending the
      *  header.  Default is `false`
+     * @param string $protocol HTTP Protocol version to use.  Default is "HTTP/1.1"
      * @return boolean Returns true or exits on success, or false if bad input
      */
-    public static function header($header, $exit = false) {
+    public static function header(
+        $header,
+        $exit = false,
+        $protocol = "HTTP/1.1"
+    ) {
         // Translate response codes to header strings
         if (is_int($header)) {
             switch($header) {
@@ -263,20 +268,22 @@ class Response {
                 break;
             }
 
-            if (is_string($header)) {
-                // Send the header
-                header ($header);
-    
-                // Exit if the $exit paramater is true
-                if ($exit) {
-                    exit;
-                }
+            $header = $protocol . " " . $header;
+        }
 
-                return true;
+        if (is_string($header)) {
+            // Send the header
+            header ($header);
+
+            // Exit if the $exit paramater is true
+            if ($exit) {
+                exit;
             }
-            else {
-                return false;
-            }
+
+            return true;
+        }
+        else {
+            return false;
         }
     }
 

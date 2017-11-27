@@ -1,5 +1,5 @@
 # Pull version
-file=$PWD/autoload.php;
+file=$PWD/StatelessCMS.php;
 VERSION="";
 
 while IFS=' ' read -r f1 f2 f3
@@ -22,10 +22,11 @@ echo "Cleaning build directory..."
 
 rm -rf temp
 mkdir -p temp
+mkdir -p build
 
 # Move files
-cp -rf lib temp/StatelessCMS
-cp autoload.php temp/StatelessCMS.php
+cp -rf StatelessCMS temp/StatelessCMS
+cp StatelessCMS.php temp/StatelessCMS.php
 
 # Zip
 echo "Creating archives..."
@@ -38,8 +39,8 @@ cd ..
 
 # Move to build
 echo "Completing build..."
-mv temp/$BUILDNAME.zip build
-mv temp/$BUILDNAME.tar.gz build
+mv temp/$BUILDNAME.zip build/$BUILDNAME.zip
+mv temp/$BUILDNAME.tar.gz build/$BUILDNAME.tar.gz
 
 # Remove build log
 echo "Cleaning up..."

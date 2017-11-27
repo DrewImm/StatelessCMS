@@ -73,6 +73,11 @@ class FormInput {
             $this->value = $this->defaultValue;
         }
 
+        // Clean value for output
+        if ($this->type !== "html") {
+            $this->value = htmlspecialchars($this->value);            
+        }
+
         // Push slug to attributes
         if (!empty($this->slug)) {
             $this->attributes["id"] = "_" . $this->slug;

@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.2.0] - 2017-11-26
+### Added
+ - Composer/Packagist support
+
+### Changed
+ - Readme examples now show directory in vendor directory
+ - Updated build script to new directory structure
+
+### Fixed
+ - Removed old composer files from build
+ - [Issue #4] Remove session_start()
+ - [Issue #6] Autoloader loads wrong directory
+ - [Issue #7] Response::header() results in 500 error
+ - [Issue #8] Request::getPath() Trailing Slash
+ - [Issue #9] FormInput->show() should encode htmlspecialchars before displaying value
+
 ## [0.1.1] - 2017-11-19
 ### Changed
  - Build directory structure

@@ -1,1 +1,1 @@
-clear && phpunit test --bootstrap autoload.php --stderr
+clear && phpunit test --bootstrap StatelessCMS.php --stderr

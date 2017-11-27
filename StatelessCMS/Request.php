@@ -33,9 +33,14 @@ class Request {
             if ($i !== false) {
                 Request::$path = substr(Request::$path, 0, $i);
             }
+            
+            // Remove trailing slashes
+            Request::$path = rtrim(Request::$path, '/');
 
-            // Remove trailing slash
-            Request::$path = preg_replace("{/$}", "", Request::$path);
+            // Add a single trailing slash if the path is empty
+            if (Request::$path === '') {
+                Request::$path = Request::$path . '/';
+            }
         }
 
         return Request::$path;
