@@ -1,5 +1,5 @@
 {
-    "name": "StatelessCMS\Stateless",
+    "name": "StatelessCMS/Stateless",
     "description": "Stateless Content Management System",
     "require": {
         "php": "^7.0"
