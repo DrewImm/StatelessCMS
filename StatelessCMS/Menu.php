@@ -14,7 +14,7 @@ class Menu {
      * @param array $items Array of MenuItem or MenuIcon objects
      * @param array $attributes Key/value pairs to attach to the tag
      */
-    public function __construct($items, $attributes) {
+    public function __construct($items = [], $attributes = []) {
         $this->items = $items;
         $this->attributes = $attributes;
     }
@@ -34,6 +34,10 @@ class Menu {
         foreach ($this->items as $item) {
             $item->show();
         }
+
+        // Close ul tag
+        echo ">";
+
 
         // Closeup
         echo "</ul>";

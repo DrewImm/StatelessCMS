@@ -83,6 +83,6 @@ class MenuItem {
         echo $this->label;
 
         // Closeup
-        echo "</a><li>";
+        echo "</a></li>";
     }
 }

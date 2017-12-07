@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.2.1] - 2017-12-7
+### Changed
+ - [Issue #10] Menu constructor default parameters
+
+### Fixed
+ - [Issue #11] Menu::show() ul tag is missing closing carot
+ - [Issue #12] MenuItem::show() never closes list item
+
 ## [0.2.0] - 2017-11-26
 ### Added
  - Composer/Packagist support
