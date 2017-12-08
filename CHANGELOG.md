@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.0] - 2017-12-7
+### Added
+ - [Issue #13] FormInput should allow for removing of line breaks
+ - [Issue #14] Missing clean script
+
 ## [0.2.1] - 2017-12-7
 ### Changed
  - [Issue #10] Menu constructor default parameters

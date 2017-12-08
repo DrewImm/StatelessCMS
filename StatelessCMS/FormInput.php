@@ -12,6 +12,8 @@ class FormInput {
     public $value; /**< Input current value */
     public $defaultValue; /**< Input default value */
     public $attributes = array(); /**< Key/value pairs for the input */
+    public $inlineLabel = false; /**< If the label should break line after */
+    public $inlineField = false; /**< If the field should break line after */
 
     public $accepts; /**< Regex type this input accepts */
     public $min; /**< Minimum numerical value */
@@ -44,6 +46,25 @@ class FormInput {
         $this->type = $type;
         $this->value = $value;
         $this->defaultValue = $defaultValue;
+
+        // Check for custom attributes
+        if (is_array($attributes)) {
+
+            // Inline Label
+            if (array_key_exists("inlineLabel", $attributes)) {
+                $this->inlineLabel = $attributes["inlineLabel"];
+                unset($attributes["inlineLabel"]);
+            }
+
+            // Inline Field
+            if (array_key_exists("inlineField", $attributes)) {
+                $this->inlineField = $attributes["inlineField"];
+                unset($attributes["inlineField"]);
+            }
+
+        }
+
+
         $this->attributes = $attributes;
     }
 
@@ -132,10 +153,16 @@ class FormInput {
         // Output label
         if (!empty($this->label) && $this->type !== "hidden") {
             echo sprintf(
-                "<label for=\"%s\">%s</label><br>",
+                "<label for=\"%s\">%s</label>",
                 $this->slug,
                 $this->label
             );
+
+            // Output line-break
+            if (!$this->inlineLabel) {
+                echo "<br>";
+            }
+
         }
 
         // Output
@@ -193,7 +220,7 @@ class FormInput {
         }
 
         // Output linebreak
-        if ($this->type !== "hidden") {
+        if ($this->type !== "hidden" && !$this->inlineField) {
             echo "<br>";
         }
     }
