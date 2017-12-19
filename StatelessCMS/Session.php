@@ -17,7 +17,8 @@ class Session {
 
     /**
      * @brief Create a new session
-     * @param string $cipherKey Cipher key to encrypt the nonce field
+     * @param mixed $cipherKey Cipher key to encrypt the nonce field  or Array
+     *  of key value pairs
      * @param integer $uuid User ID to associate the nonce with.  Default is 0
      * @param integer $ttl Time to live (days).  Default is 7
      * @param string $salt String to salt the nonce with.
@@ -32,6 +33,38 @@ class Session {
         $pepperLength = 3,
         $prefix = "__"
     ) {
+
+        // Check if first parameter is array
+        if (is_array($cipherKey)) {
+            $data = $cipherKey;
+
+            if (array_key_exists("cipher_key", $data)) {
+                $cipherKey = $data["cipher_key"];
+            }
+
+            if (array_key_exists("uuid", $data)) {
+                $uuid = $data["uuid"];
+            }
+
+            if (array_key_exists("ttl", $data)) {
+                $ttl = $data["ttl"];
+            }
+
+            if (array_key_exists("salt", $data)) {
+                $salt = $data["salt"];
+            }
+
+            if (array_key_exists("pepperLength", $data)) {
+                $pepperLength = $data["pepperLength"];
+            }
+
+            if (array_key_exists("prefix", $data)) {
+                $prefix = $data["prefix"];
+            }
+            
+        }
+
+
         // Destroy old session
         Session::destroy();
 

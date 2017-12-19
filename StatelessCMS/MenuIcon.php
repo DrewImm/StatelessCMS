@@ -12,7 +12,7 @@ class MenuIcon extends MenuItem {
      */
     public function show() {
         $this->label = 
-            "<i class=\"fa " . $this->label . "\" " .
+            "<i class=\"" . $this->label . "\" " .
             "aria-hidden=\"true\"></i>"
         ;
 

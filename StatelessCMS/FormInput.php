@@ -25,7 +25,7 @@ class FormInput {
 
     /**
      * @brief Construct a new FormInput object
-     * @param string $label Label for the input
+     * @param mixed $label Label for the input or Array of key value pairs
      * @param string $slug Input slug (name)
      * @param string $type Input type - i.e. "text", "textarea", "visual",
      *  "toggle".  Default is "text"
@@ -41,6 +41,36 @@ class FormInput {
         $defaultValue = false,
         $attributes = array()
     ) {
+
+        // Check if first parameter is array
+        if (is_array($label)) {
+            $data = $label;
+
+            if (array_key_exists("label", $data)) {
+                $label = $data["label"];
+            }
+
+            if (array_key_exists("slug", $data)) {
+                $slug = $data["slug"];
+            }
+
+            if (array_key_exists("type", $data)) {
+                $type = $data["type"];
+            }
+
+            if (array_key_exists("value", $data)) {
+                $value = $data["value"];
+            }
+
+            if (array_key_exists("default_value", $data)) {
+                $defaultValue = $data["default_value"];
+            }
+
+            if (array_key_exists("attributes", $data)) {
+                $attributes = $data["attributes"];
+            }
+        }
+
         $this->label = $label;
         $this->slug = $slug;
         $this->type = $type;

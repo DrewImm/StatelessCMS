@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.3.1] - 2017-12-19
+### Changed
+ - [Issue #16] Long constructors should accept array of parameters
+ - [Issue #18] MenuIcon::show() should remove font awesome class for upwards compatability
+ - [Issue #19] MenuItem::show() should allow for nested menus
+
+### Fixed
+ - [Issue #15] MenuItem should append active class before output
+ - [Issue #17] Menu::show() closes the `<ul>` tag after outputting menu items
+
 ## [0.3.0] - 2017-12-7
 ### Added
  - [Issue #13] FormInput should allow for removing of line breaks

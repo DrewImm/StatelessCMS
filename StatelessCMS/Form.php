@@ -25,7 +25,7 @@ class Form {
 
     /**
      * @brief Construct a new Form
-     * @param string $name Form name to validate submission
+     * @param mixed $name Form name to validate submission or Array of key values
      * @param array $inputs Array of FormInput objects to populate the form
      * @param string $cipherKey Cipher key to encrypt the nonce field
      * @param string $method HTTP method to use.  Default is POST
@@ -53,6 +53,56 @@ class Form {
         $pepperLength = 2,
         $nonceKey = "__nonce"
     ) {
+        // Check if first parameter is array
+        if (is_array($name)) {
+            $data = $name;
+
+            if (array_key_exists("name", $data)) {
+                $name = $data["name"];
+            }
+
+            if (array_key_exists("method", $data)) {
+                $method = $data["method"];
+            }
+
+            if (array_key_exists("inputs", $data)) {
+                $inputs = $data["inputs"];
+            }
+
+            if (array_key_exists("cipher_key", $data)) {
+                $cipherKey = $data["cipher_key"];
+            }
+
+            if (array_key_exists("action", $data)) {
+                $action = $data["action"];
+            }
+
+            if (array_key_exists("uuid", $data)) {
+                $uuid = $data["uuid"];
+            }
+
+            if (array_Key_exists("obid", $data)) {
+                $obid = $data["obid"];
+            }
+
+            if (array_key_exists("ttl", $data)) {
+                $ttl = $data["ttl"];
+            }
+        
+            if (array_key_exists("salt", $data)) {
+                $salt = $data["salt"];
+            }
+
+            if (array_key_exists("pepper_length", $data)) {
+                $pepperLength = $data["pepper_length"];
+            }
+
+            if (array_key_exists("nonce_key", $data)) {
+                $nonceKey = $data["nonce_key"];
+            }
+        }
+
+        // Set data
         $this->name = $name;
         $this->method = $method;
         $this->inputs = $inputs;
@@ -64,6 +114,7 @@ class Form {
         $this->salt = $salt;
         $this->pepperLength = $pepperLength;
         $this->nonceKey = $nonceKey;
+
 
         if (method_exists($this, "init")) {
             $this->init();

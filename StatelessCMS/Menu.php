@@ -30,14 +30,12 @@ class Menu {
             echo " " . $key . "=\"" . $value . "\"";
         }
 
+        echo ">";
+
         // Output MenuItems
         foreach ($this->items as $item) {
             $item->show();
         }
-
-        // Close ul tag
-        echo ">";
-
 
         // Closeup
         echo "</ul>";
