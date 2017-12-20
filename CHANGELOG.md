@@ -1,6 +1,9 @@
 # Changelog
 
 ## [0.3.1] - 2017-12-19
+### Added
+ - [Issue #21] Create license and code of conduct
+ 
 ### Changed
  - [Issue #16] Long constructors should accept array of parameters
  - [Issue #18] MenuIcon::show() should remove font awesome class for upwards compatability
