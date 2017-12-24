@@ -1,5 +1,5 @@
 {
-    "name": "stateless-cms/stateless",
+    "name": "stateless/cms",
     "description": "Stateless Content Management System",
     "autoload": {
         "psr-4": {
@@ -8,5 +8,6 @@
     },
     "require": {
         "php": "^7.0"
-    }
+    },
+    "license": "MIT"
 }
