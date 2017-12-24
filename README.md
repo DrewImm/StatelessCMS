@@ -12,7 +12,7 @@ Get a server running PHP 7.0 and a SQL database.
 ### Composer Install
 The easiest way to install StatelessCMS is to install with Composer:
 ```
-composer require stateless-cms/stateless
+composer require stateless/cms
 ```
 
 ### Web Download
