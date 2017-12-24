@@ -1,5 +1,10 @@
 # Changelog
 
+## [0.3.2] - 2017-12-24
+### Changed
+ - [Issue #23] Composer license
+ - [Issue #25] Composer Package
+
 ## [0.3.1] - 2017-12-19
 ### Added
  - [Issue #21] Create license and code of conduct
