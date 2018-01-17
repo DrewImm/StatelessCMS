@@ -9,6 +9,7 @@ use PHPUnit\Framework\TestCase;
  * @covers Menu, MenuItem, MenuIcon
  */
 final class MenuTest extends TestCase {
+
     public function testCreateMenu() {
         $menu = new Menu(
             [
@@ -45,4 +46,5 @@ final class MenuTest extends TestCase {
             strlen($result) > 1
         );
     }
-}
+
+};

@@ -7,7 +7,8 @@
  */
 
 /**
- * @brief Autoload module files
+ * Autoload module files
+ * 
  * @param string $load Class name to load
  */
 spl_autoload_register(function($load) {

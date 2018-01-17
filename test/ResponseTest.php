@@ -7,6 +7,7 @@ use PHPUnit\Framework\TestCase;
  * @covers Response
  */
 final class ResponseTest extends TestCase {
+
     public function testHeader() {
         //Response::header(404);
     }
@@ -18,4 +19,5 @@ final class ResponseTest extends TestCase {
     public function testSendToken() {
         //Response::sendToken("");
     }
-}
+
+};

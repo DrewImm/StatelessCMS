@@ -16,6 +16,7 @@ const pepperLen = 3;
 const ttl = 3600;
 
 final class CryptoTest extends TestCase {
+
     public function testHash() {
         $hash = Crypto::hash(in);
 
@@ -188,4 +189,4 @@ final class CryptoTest extends TestCase {
         );
     }
 
-}
+};

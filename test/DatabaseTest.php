@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
  * @covers Database, DatabaseColumn
  */
 final class DatabaseTest extends TestCase {
+
     public function testConnect() {
         $db = new Database(
             "localhost",
@@ -267,4 +268,5 @@ final class DatabaseTest extends TestCase {
         
         $this->assertTrue($result1 && $result2);
     }
-}
+
+};
