@@ -7,14 +7,21 @@ use PHPUnit\Framework\TestCase;
  * @covers Request
  */
 final class RequestTest extends TestCase {
+
     public function testGetPath() {
+        // TODO - Can this be tested?
+        /*
         $this->assertTrue(empty(Request::getPath()));
+        */
     }
 
     public function testGetDirs() {
+        // TODO - Can this be tested?
+        /*
         $this->assertTrue(
             empty(Request::getDirs())
         );
+        */
     }
 
     public function testGetDomain() {
@@ -62,5 +69,4 @@ final class RequestTest extends TestCase {
         );
     }
 
-
-}
+};
