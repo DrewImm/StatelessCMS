@@ -3,113 +3,256 @@
 namespace Stateless;
 
 /**
- * @brief A single input in a Form
+ * A single input in a Form
  */
 class FormInput {
-    public $label; /**< Text label to display */
-    public $slug; /**< Input slug (name) */
-    public $type; /**< Input type - i.e. "text", "textarea", "visual", "toggle" */
-    public $value; /**< Input current value */
-    public $defaultValue; /**< Input default value */
-    public $attributes = array(); /**< Key/value pairs for the input */
-    public $inlineLabel = false; /**< If the label should break line after */
-    public $inlineField = false; /**< If the field should break line after */
 
-    public $accepts; /**< Regex type this input accepts */
-    public $min; /**< Minimum numerical value */
-    public $max; /**< Maximum numerical value */
-    public $minLength; /**< Minimum string-length */
-    public $maxLength; /**< Maximum string-length */
-    public $required; /**< If the field should be required */
-    public $readonly; /**< If the field should be read-only */
+    /** Text label to display */
+    public $label;
+
+    /** Input slug (name) */
+    public $slug;
+
+    /** Input type - i.e. "text", "textarea", "visual", "toggle", "html" */
+    public $type;
+
+    /** Input children (select options, etc) */
+    public $children;
+
+    /** Custom html for a standard form */
+    public $html;
+
+    /** Input description */
+    public $description;
+
+    /** Input current value */
+    public $value;
+
+    /** Input default value (value sent if field is empty and not required) */
+    public $defaultValue;
+
+    /** Input placeholder */
+    public $placeholder;
+
+    /** Key/value pairs for the input */
+    public $attributes = array();
+
+    /** If the label should break line after */
+    public $inlineLabel;
+
+    /** If the field should break line after */
+    public $inlineField;
+
+    /** If the field should be required */
+    public $required;
+
+    /** If the field should be read-only */
+    public $readonly;
+
+    /** Callback function to validate this form input */
+    public $validateCallback;
+
+    /** Callback function to filter this form input */
+    public $filterCallback;
+
+    /** Minimum numerical value (for number inputs) */
+    public $min;
+
+    /** Maximum numerical value (for number inputs) */
+    public $max;
+
+    /** Minimum string-length */
+    public $minLength;
+
+    /** Maximum string-length */
+    public $maxLength;
 
     /**
-     * @brief Construct a new FormInput object
-     * @param mixed $label Label for the input or Array of key value pairs
-     * @param string $slug Input slug (name)
-     * @param string $type Input type - i.e. "text", "textarea", "visual",
-     *  "toggle".  Default is "text"
-     * @param boolean $value Input current value.  Default is empty
-     * @param boolean $defaultValue Input default value.  Default is empty
-     * @param array $attributes Key/value pairs for the input.  Default is empty
+     * Construct a new FormInput object
+     * 
+     * @param array $data (Optional) Key/value pairs for the input
      */
-    public function __construct(
-        $label,
-        $slug,
-        $type = "text",
-        $value = false,
-        $defaultValue = false,
-        $attributes = array()
-    ) {
+    public function __construct($data = []) {
 
-        // Check if first parameter is array
-        if (is_array($label)) {
-            $data = $label;
+        // Check if $data is array
+        if ($data && is_array($data)) {
 
+            // Label
             if (array_key_exists("label", $data)) {
-                $label = $data["label"];
+                $this->label = $data["label"];
             }
 
+            // Slug
             if (array_key_exists("slug", $data)) {
-                $slug = $data["slug"];
+                $this->slug = $data["slug"];
             }
 
+            // Input Type
             if (array_key_exists("type", $data)) {
-                $type = $data["type"];
+                $this->type = $data["type"];
             }
 
+            // Input children
+            if (array_key_exists("children", $data)) {
+                $this->children = $data["children"];
+            }
+
+            // Custom html
+            if (array_key_exists("html", $data)) {
+                $this->html = $data["html"];
+            }
+
+            // Description
+            if (array_key_exists("description", $data)) {
+                $this->description = $data["description"];
+            }
+
+            // Value
             if (array_key_exists("value", $data)) {
-                $value = $data["value"];
+                $this->value = $data["value"];
             }
 
+            // Value
             if (array_key_exists("default_value", $data)) {
-                $defaultValue = $data["default_value"];
+                $this->defaultValue = $data["default_value"];
             }
 
+            // Placeholder
+            if (array_key_exists("placeholder", $data)) {
+                $this->placeholder = $data["placeholder"];
+            }
+
+            // Default Value
+            if (array_key_exists("default_value", $data)) {
+                $this->defaultValue = $data["default_value"];
+            }
+
+            // Attributes
             if (array_key_exists("attributes", $data)) {
-                $attributes = $data["attributes"];
+                $this->attributes = $data["attributes"];
             }
+
+            // Inline field
+            if (array_key_exists("inline_field", $data)) {
+                $this->inline_field = $data["inline_field"];
+            }
+
+            // Inline label
+            if (array_key_exists("inline_label", $data)) {
+                $this->inline_label = $data["inline_label"];
+            }
+
+            // Required
+            if (array_key_exists("required", $data)) {
+                $this->required = $data["required"];
+            }
+
+            // Read only
+            if (array_key_exists("readonly", $data)) {
+                $this->inline_label = $data["readonly"];
+            }
+
+            // Validate callback
+            if (array_key_exists("validate", $data)) {
+                $this->validate = $data["validate"];
+            }
+
+            // Filter callback
+            if (array_key_exists("filter", $data)) {
+                $this->filter = $data["filter"];
+            }
+
+            // Minimum numerical value
+            if (array_key_exists("min", $data)) {
+                $this->min = $data["min"];
+            }
+
+            // Maximum numerical value
+            if (array_key_exists("max", $data)) {
+                $this->max = $data["max"];
+            }
+
+            // Minimum string-length
+            if (array_key_exists("minlength", $data)) {
+                $this->minLength = $data["min_length"];
+            }
+
+            // Maximum string-length
+            if (array_key_exists("maxlength", $data)) {
+                $this->maxLength = $data["maxlength"];
+            }        
+            
         }
 
-        $this->label = $label;
-        $this->slug = $slug;
-        $this->type = $type;
-        $this->value = $value;
-        $this->defaultValue = $defaultValue;
-
-        // Check for custom attributes
-        if (is_array($attributes)) {
-
-            // Inline Label
-            if (array_key_exists("inlineLabel", $attributes)) {
-                $this->inlineLabel = $attributes["inlineLabel"];
-                unset($attributes["inlineLabel"]);
-            }
-
-            // Inline Field
-            if (array_key_exists("inlineField", $attributes)) {
-                $this->inlineField = $attributes["inlineField"];
-                unset($attributes["inlineField"]);
-            }
-
-        }
-
-
-        $this->attributes = $attributes;
     }
 
     /**
-     * @brief Output the input markup to the current output buffer4
+     * Get the input field's value from a request
+     * 
+     * @return mixed Returns the value from the array, or `false` if not set
+     */
+    public function getValue() {
+
+        // Check if the request has the value
+        if ($this->hasValue()) {
+
+            // Return the payload value
+            return Request::getPayload()[$this->slug];
+        }
+        else {
+
+            // Return false
+            return false;
+        }
+
+    }
+
+    /**
+     * Check if the input has value in a request
+     * 
+     * @return boolean `true` if the input has value, otherwise `false`
+     */
+    public function hasValue() {
+        $payload = Request::getPayload();
+
+        return (
+            !empty($payload) &&
+            isset($payload[$this->slug])
+        );
+    }
+
+    /**
+     * Set the value for this input
+     * 
+     * @param mixed $value New value for this input
+     * @return bool Returns if the input value was set
+     */
+    public function setValue($value) {
+        // Check if the request has the value
+        if ($this->hasValue()) {
+            Request::$payload[$this->slug] = $value;
+
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
+    /**
+     * Output the input markup to the current output buffer
      */
     public function show() {
+
+        // Attributes to be passed to the input
         $attributes = "";
 
-        // Convert "toggle" field to normal checkbox
+        // Convert "toggle" field to a standard checkbox
         if ($this->type === "toggle") {
             $this->defaultValue = 1;
             $this->type = "checkbox";
 
-            if (intval($this->value) === inval($this->defaultValue)) {
+            if (intval($this->value) === intval($this->defaultValue)) {
                 $this->attributes["checked"] = true;
             }
         }
@@ -124,6 +267,7 @@ class FormInput {
             $this->value = $this->defaultValue;
         }
 
+
         // Clean value for output
         if ($this->type !== "html") {
             $this->value = htmlspecialchars($this->value);            
@@ -135,39 +279,39 @@ class FormInput {
             $this->attributes["name"] = $this->slug;
         }
 
-        // Check required
+        // Push placeholder
+        if ($this->placeholder) {
+            $this->attributes["placeholder"] = $this->placeholder;
+        }
+
+        // Push required to attributes
         if ($this->required) {
             $this->attributes["required"] = true;
         }
 
-        // Check required
-        if ($this->required) {
-            $this->attributes["required"] = true;
-        }
-
-        // Check readonly
+        // Push readonly to attributes
         if ($this->readonly) {
             $this->attributes["readonly"] = true;
         }
 
-        // Check min
+        // Push min to attributes
         if (isset($this->min)) {
             $this->attributes["min"] = $this->min;
         }
 
-        // Check max
+        // Push max to attributes
         if (isset($this->max)) {
             $this->attributes["max"] = $this->max;
         }
 
-        // Check minLength
+        // Push minLength to attributes
         if (isset($this->minLength)) {
-            $this->attributes["minlength"] = $this->minlength;
+            $this->attributes["minlength"] = $this->minLength;
         }
 
-        // Check maxLength
+        // Push maxLength to attributes
         if (isset($this->maxLength)) {
-            $this->attributes["maxLength"] = $this->maxLength;
+            $this->attributes["maxlength"] = $this->maxLength;
         }
 
         // Append attributes array to attributes string
@@ -181,72 +325,84 @@ class FormInput {
         }
 
         // Output label
-        if (!empty($this->label) && $this->type !== "hidden") {
+        if (!empty($this->label)) {
             echo sprintf(
                 "<label for=\"%s\">%s</label>",
                 $this->slug,
                 $this->label
             );
 
+            // Output description
+            if ($this->description) {
+                echo "<p class=\"description\">" . $this->description . "</p>";
+            }
+
             // Output line-break
-            if (!$this->inlineLabel) {
+            else if (!$this->inlineLabel) {
                 echo "<br>";
             }
 
         }
 
         // Output
-        switch ($this->type) {
-            case "textarea":
-            case "visual":
-                // Output editor
-                echo sprintf(
-                    "<textarea %s>%s</textarea>",
-                    $attributes,
-                    $this->value
-                );
-            break;
-
-            case "select":
-                // Output select tag open
-                echo sprintf("<select %s>", $attributes);
-
-                // Output children
-                if (!empty($this->children) && is_array($this->children)) {
-                    foreach ($this->children as $key => $value) {
-						if ($value === $this->value) {
-							echo sprintf(
-                                "<option value=\"%s\" selected>%s</option>",
-                                $value,
-                                $key);
-						}
-						else {
-							echo sprintf(
-                                "<option value=\"%s\">%s</option>",
-                                $value,
-                                $key
-                            );
-						}
+        if ($this->html) {
+            // Output custom HTML for field
+            echo $this->html;
+        }
+        else {
+            // Output standard fields
+            switch ($this->type) {
+                case "textarea":
+                case "visual":
+                    // Output editor
+                    echo sprintf(
+                        "<textarea %s>%s</textarea>",
+                        $attributes,
+                        $this->value
+                    );
+                break;
+    
+                case "select":
+                    // Output select tag open
+                    echo sprintf("<select %s>", $attributes);
+    
+                    // Output children
+                    if (!empty($this->children) && is_array($this->children)) {
+                        foreach ($this->children as $key => $value) {
+                            if ($value === $this->value) {
+                                echo sprintf(
+                                    "<option value=\"%s\" selected>%s</option>",
+                                    $value,
+                                    $key);
+                            }
+                            else {
+                                echo sprintf(
+                                    "<option value=\"%s\">%s</option>",
+                                    $value,
+                                    $key
+                                );
+                            }
+                        }
                     }
-                }
-
-                // Output closing
-                echo "</select>";
-            break;
-
-            case "html":
-                echo $this->value;
-            break;
-
-            default:
-                // Output standard input
-                echo sprintf(
-                    "<input type=\"%s\" value=\"%s\" %s />",
-                    $this->type,
-                    $this->value,
-                    $attributes
-                );
-            break;
+    
+                    // Output closing
+                    echo "</select>";
+                break;
+    
+                case "html":
+                    echo $this->value;
+                break;
+    
+                default:
+                    // Output standard input
+                    echo sprintf(
+                        "<input type=\"%s\" value=\"%s\" %s />",
+                        $this->type,
+                        $this->value,
+                        $attributes
+                    );
+                break;
+            }
         }
 
         // Output linebreak
@@ -256,7 +412,7 @@ class FormInput {
     }
 
     /**
-     * @brief Output the input's script to the current output buffer
+     * Output the input's script to the current output buffer
      */
     public function showScript() {
         switch ($this->type) {
@@ -271,35 +427,10 @@ class FormInput {
         }
     }
 
-    /**
-     * @brief Check if the input has value in a request
-     * @return boolean `true` if the input has value, otherwise `false`
-     */
-    public function hasValue() {
-        $payload = Request::getPayload();
-
-        return (
-            !empty($payload) &&
-            isset($payload[$this->slug])
-        );
-    }
 
     /**
-     * @brief Get the input field's value from a request
-     * @return mixed Returns the value from the array, or `false` if not set
-     */
-    public function getValue() {
-        // Check if the request has the value
-        if ($this->hasValue()) {
-            return Request::getPayload()[$this->slug];
-        }
-        else {
-            return false;
-        }
-    }
-
-    /**
-     * @brief Check if the input is valid
+     * Check if the input is valid
+     * 
      * @return boolean Returns if the input field is valid
      */
     public function isValid() {
@@ -310,6 +441,11 @@ class FormInput {
 
         // If not required and not filled out, it is valid
         if (!$this->required && empty($this->getValue())) {
+            return true;
+        }
+
+        // If is required and not filled out, it is NOT valid
+        if ($this->required && empty($this->getValue())) {
             return "This field is required.";
         }
 
@@ -320,6 +456,16 @@ class FormInput {
 
         // Pull the value and the length
         $value = $this->getValue();
+
+        // Run validate function
+        if ($this->validateCallback) {
+            if (!($this->validateCallback)($value)) {
+                $name = ($this->label) ? $this->label : $this->slug;
+
+                return "Field `" . $name . "`: " . 
+                    "This field is not valid.";
+            }
+        }
 
         // String checks
         if (is_string($value)) {
@@ -350,18 +496,28 @@ class FormInput {
             $value = intval($value);
 
             // Check minLength
-            if ($value < $this->min) {
+            if (isset($this->min) && $value < $this->min) {
                 return "This value must be at least " . $this->min . ".";
             }
 
             // Check maxLength
-            if ($value > $this->max) {
+            if (isset($this->max) && $value > $this->max) {
                 return "This value must not be larger than " . $this->max . ".";
             }
         }
 
         // All checks passed
+
+        // Run filter function
+        if ($this->filterCallback) {
+            $this->setValue(
+                ($this->filterCallback)($value)
+            );
+        }
+
+        // Return true
         return true;
 
     }
-}
+
+};
