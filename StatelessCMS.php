@@ -3,11 +3,12 @@
  * StatelessCMS.php
  * 
  * @package StatelessCMS
- * @version 0.3.2
+ * @version 1.0.0
  */
 
 /**
- * @brief Autoload module files
+ * Autoload module files
+ * 
  * @param string $load Class name to load
  */
 spl_autoload_register(function($load) {

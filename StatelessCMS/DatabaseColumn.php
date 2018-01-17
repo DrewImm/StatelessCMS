@@ -3,20 +3,35 @@
 namespace Stateless;
 
 /**
- * @brief A single column in a database table.
+ * A single column in a database table.
  */
 class DatabaseColumn {
-    public $name; /**< Name of the database column */
-    public $type; /**< Data type - i.e. "int", "varchar", "varchar(255)" */
-    public $default; /**< Default value.  i.e. "TIMESTAMP", etc */
-    public $auto; /**< If this should be the primary auto-incrementing key */
-    public $size; /**< Data size */
-    public $require; /**< If this column should be required (NOT NULL) */
-    public $primary; /**< If this column is the table's primary key */
+
+    /** Name of the database column */
+    public $name;
+
+    /** Data type - i.e. "int", "varchar", "varchar(255)" */
+    public $type;
+
+    /** Default value.  i.e. "TIMESTAMP", etc */
+    public $default;
+
+    /** If this should be the primary auto-incrementing key */
+    public $auto;
+
+    /** Data size */
+    public $size;
+
+    /** If this column should be required (NOT NULL) */
+    public $require;
+
+    /** If this column is the table's primary key */
+    public $primary;
 
     /**
-     * @brief Construct a single DatabaseColumn object to be used with
+     * Construct a single DatabaseColumn object to be used with
      *   Connection::createTable()
+     * 
      * @param string $name Name for the column
      * @param string $type Type of database to store
      * @param boolean $auto If this should be the primary auto-incrementing key
@@ -26,4 +41,5 @@ class DatabaseColumn {
         $this->type = $type;
         $this->auto = $auto;
     }
-}
+
+};

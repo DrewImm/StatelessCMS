@@ -3,21 +3,39 @@
 namespace Stateless;
 
 /**
- * @brief Request is a class that holds data about the current http request
+ * Request is a class that holds data about the current http request
  */
 class Request {
-    protected static $path; /**< string Url path */
-    protected static $dirs; /**< array Array of directories in path, including the ending file */
-    protected static $domain; /**< string The full domain */
-    protected static $domains; /**< array The domains as an array */
-    protected static $subdomain; /**< string The first subdomain that is not www. */
-    protected static $method; /**< string The request method ("GET", "POST", "DELETE", etc) */
-    protected static $payload; /**< array Payload sent with the request */
-    protected static $headers; /**< array Array of headers sent with the request */
-    protected static $token; /**< string The bearer token pulled from the Authorization header */
+    /** Url path */
+    protected static $path;
+
+    /** Array of directories in path, including the ending file */
+    protected static $dirs;
+
+    /** The full domain */
+    protected static $domain;
+
+    /** The domains as an array */
+    protected static $domains;
+
+    /** The first subdomain that is not www. */
+    protected static $subdomain;
+
+    /** The request method ("GET", "POST", "DELETE", etc) */
+    protected static $method;
+
+    /** array Payload sent with the request */
+    protected static $payload;
+
+    /** array Array of headers sent with the request */
+    protected static $headers;
+
+    /** string The bearer token pulled from the Authorization header */
+    protected static $token;
 
     /**
-     * @brief Get path from the url
+     * Get path from the url
+     * 
      * @return string Returns the url path
      */
     public static function getPath() {
@@ -47,7 +65,8 @@ class Request {
     }
     
     /**
-     * @brief Get the path directories
+     * Get the path directories
+     * 
      * @return array Returns an array of the path directories
      */
     public static function getDirs() {
@@ -70,7 +89,8 @@ class Request {
     }
 
     /**
-     * @brief Get the domain
+     * Get the domain
+     * 
      * @return string Returns the domain as a string
      */
     public static function getDomain() {
@@ -87,7 +107,8 @@ class Request {
     }
 
     /**
-     * @brief Get subdomains and domains
+     * Get subdomains and domains
+     * 
      * @return array Returns the domains as an array
      */
     public static function getDomains() {
@@ -99,7 +120,8 @@ class Request {
     }
 
     /**
-     * @brief Get the first subdomain that isnt "www"
+     * Get the first subdomain that isnt "www"
+     * 
      * @return string Returns the subdomain, or the main domain if none exist
      */
     public static function getSubdomain() {
@@ -116,7 +138,8 @@ class Request {
     }
 
     /**
-     * @brief Get the request method
+     * Get the request method
+     * 
      * @return string Returns the request method
      */
     public static function getMethod() {
@@ -135,7 +158,8 @@ class Request {
     }
 
     /**
-     * @brief Get the payload
+     * Get the payload
+     * 
      * @return array Returns the payload as an array
      */
     public static function getPayload() {
@@ -175,7 +199,8 @@ class Request {
     }
 
     /**
-     * @brief Get the headers
+     * Get the headers
+     * 
      * @return mixed Returns the headers as an array, or false if cannot access
      */
     public static function getHeaders() {
@@ -190,7 +215,8 @@ class Request {
     }
 
     /**
-     * @brief Get the bearer token from the authentication header
+     * Get the bearer token from the authentication header
+     * 
      * @return mixed Returns the token as a string, or false if cannot access
      */
     public static function getToken() {
@@ -216,4 +242,5 @@ class Request {
 
         return Request::$token;
     }
-}
+
+};

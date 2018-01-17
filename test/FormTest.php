@@ -13,6 +13,7 @@ define("CIPHER_KEY", "lKKL2UuzmHKdBB1vHDFzNzCiTei6jWOTDdE7tJPPMGYQpnohGQUhVduwZT
  * @covers Form, FormInput
  */
 final class FormTest extends TestCase {
+
     public function testConstruct() {
         $form = new Form(
             "test-form",
@@ -106,4 +107,5 @@ final class FormTest extends TestCase {
 
         $this->assertFalse($values);
     }
-}
+
+};

@@ -16,10 +16,10 @@ composer require stateless/cms
 ```
 
 ### Web Download
-Download the latest release from [https://github.com/StatelessCMS/StatelessCMS/releases](https://github.com/StatelessCMS/StatelessCMS/releases).
+Download the latest release from [https://github.com/StatelessSoftware/StatelessCMS/releases](https://github.com/StatelessSoftware/StatelessCMS/releases).
 
 ### Development
-If you would like the live development branch instead, download or clone from github.  [https://github.com/StatelessCMS/StatelessCMS.git](https://github.com/StatelessCMS/StatelessCMS.git)
+If you would like the live development branch instead, download or clone from github.  [https://github.com/StatelessSoftware/StatelessCMS.git](https://github.com/StatelessSoftware/StatelessCMS.git)
 
 ## Setting up your first project
 Although you are free to use any directory structure you choose, the common structure for StatelessCMS is as follows.  For now, you can just create the public folder, index.php, and the lib folder.

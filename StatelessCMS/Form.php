@@ -5,213 +5,152 @@ namespace Stateless;
 use Stateless\Request;
 
 /**
- * @brief Create and verify html forms
+ * Create and verify html forms
  */
 class Form {
-    public $name; /**< string Form name to validate submission */
-    public $inputs; /**< Array of FormInput objects to populate the form */
-    public $cipherKey; /**< Cipher key to encrypt the nonce field */
-    public $method; /**< string HTTP method to use.  Default is POST */
-    public $action; /**< Form action.  Default is empty */
-    public $uuid; /**< User ID to validate submission.  Default is 0 */
-    public $obid; /**< Object ID to validate submission.  Default is 0 */
-    public $ttl; /**< Time (in seconds) for a form submission to live.  Default is 3600 seconds. */
-    public $salt; /**< Salt string to apply to the nonce.  Default is "_" */
-    public $pepperLength; /**< Length of the pepper to apply to the nonce.  Default is 2 characters */
-    public $nonceKey; /**< The key for the hidden nonce field.  Default is "__nonce" */
 
-    private $submitted;
-    private $validated;
+    /** Form name to validate submission */
+    public $name = "untitled-form";
+
+    /** Array of FormInput objects to populate the form */
+    public $inputs = [];
+
+    /** HTTP method to use. */
+    public $method = "post";
+
+    /** Form action. */
+    public $action = "";
+
+    /** Array of attributes to inlcude with the form */
+    public $attributes;
+    
+    /** Array of attributes to push to the children */
+    public $childAttributes;
+
+    /** User ID to validate submission. */
+    public $uuid = 0;
+
+    /** Object ID to validate submission. */
+    public $obid = 0;
+
+    /** Time (in seconds) for a form submission to live. */
+    public $ttl = 3600;
+
+    /** Salt string to apply to the nonce. */
+    public $salt = "_";
+
+    /** Length of the pepper to apply to the nonce. */
+    public $pepperLength = 2;
+
+    /** The key for the hidden nonce field. */
+    public $nonceKey = "__nonce";
+
+    /** Cipher key to encrypt the nonce field */
+    public $cipherKey = CIPHER_KEY;
+
+    /** Result of form submission */
+    protected $result;
+
+    /** Error message to be shown */
+    protected $error;
 
     /**
-     * @brief Construct a new Form
-     * @param mixed $name Form name to validate submission or Array of key values
-     * @param array $inputs Array of FormInput objects to populate the form
-     * @param string $cipherKey Cipher key to encrypt the nonce field
-     * @param string $method HTTP method to use.  Default is POST
-     * @param string $action Form action.  Default is empty
-     * @param integer $uuid User ID to validate submission.  Default is 0
-     * @param integer $obid Object ID to validate submission.  Default is 0
-     * @param integer $ttl Time (in seconds) for a form submission to live.
-     *  Default is 3600 seconds.
-     * @param string $salt Salt string to apply to the nonce.  Default is "_"
-     * @param integer $pepperLength Length of the pepper to apply to the nonce.
-     *  Default is 2 characters
-     * @param string $nonceKey The key for the hidden nonce field.  Default is
-     *  "__nonce"
+     * Construct a new Form
+     * 
+     * @param array $data (Optional) Array of data for the form
      */
-    public function __construct(
-        $name = "",
-        $inputs = array(),
-        $cipherKey = "",
-        $method = "POST",
-        $action = "",
-        $uuid = 0,
-        $obid = 0,
-        $ttl = 3600,
-        $salt = "_",
-        $pepperLength = 2,
-        $nonceKey = "__nonce"
-    ) {
-        // Check if first parameter is array
-        if (is_array($name)) {
-            $data = $name;
+    public function __construct($data = []) {
 
+        // Check if $data is array
+        if ($data && is_array($data)) {
+
+            // Name
             if (array_key_exists("name", $data)) {
-                $name = $data["name"];
+                $this->name = $data["name"];
             }
 
-            if (array_key_exists("method", $data)) {
-                $method = $data["method"];
-            }
-
+            // Inputs
             if (array_key_exists("inputs", $data)) {
-                $inputs = $data["inputs"];
+                $this->inputs = $data["inputs"];
             }
 
-            if (array_key_exists("cipher_key", $data)) {
-                $cipherKey = $data["cipher_key"];
+            // Method
+            if (array_key_exists("method", $data)) {
+                $this->method = $data["method"];
             }
 
+            // Action
             if (array_key_exists("action", $data)) {
-                $action = $data["action"];
+                $this->action = $data["action"];
             }
 
+            // Attributes
+            if (array_key_exists("attributes", $data)) {
+                $this->attributes = $data["attributes"];
+            }
+
+            // Attributes
+            if (array_key_exists("child_attributes", $data)) {
+                $this->childAttributes = $data["child_attributes"];
+            }
+
+            // User ID
             if (array_key_exists("uuid", $data)) {
-                $uuid = $data["uuid"];
+                $this->uuid = $data["uuid"];
             }
 
+            // Object ID
             if (array_Key_exists("obid", $data)) {
-                $obid = $data["obid"];
+                $this->obid = $data["obid"];
             }
 
+            // Time to live
             if (array_key_exists("ttl", $data)) {
-                $ttl = $data["ttl"];
+                $this->ttl = $data["ttl"];
             }
-        
+
+            // Salt
             if (array_key_exists("salt", $data)) {
-                $salt = $data["salt"];
+                $this->salt = $data["salt"];
             }
 
+            // Pepper length
             if (array_key_exists("pepper_length", $data)) {
-                $pepperLength = $data["pepper_length"];
+                $this->pepperLength = $data["pepper_length"];
             }
 
+            // Nonce key
             if (array_key_exists("nonce_key", $data)) {
-                $nonceKey = $data["nonce_key"];
+                $this->nonceKey = $data["nonce_key"];
+            }
+
+            // Cipher key
+            if (array_key_exists("cipher_key", $data)) {
+                $this->cipherKey = $data["cipher_key"];
             }
         }
-
-        // Set data
-        $this->name = $name;
-        $this->method = $method;
-        $this->inputs = $inputs;
-        $this->cipherKey = $cipherKey;
-        $this->action = $action;
-        $this->uuid = $uuid;
-        $this->obid = $obid;
-        $this->ttl = $ttl;
-        $this->salt = $salt;
-        $this->pepperLength = $pepperLength;
-        $this->nonceKey = $nonceKey;
-
-
-        if (method_exists($this, "init")) {
-            $this->init();
-        }
-
-        $this->isSubmit();
-        $this->isValid();
+        
+        // Check for init method
+        $this->init();
     }
 
     /**
-     * @brief Check for a submission
-     * @return boolean Returns if a submission exists in the request
-     */
-    public function isSubmit() {
-        if (!isset($this->submitted)) {
-            $payload = Request::getPayload();
-            // Checck for the nonce key in the request payload
-            if (
-                !empty($payload) &&
-                array_key_exists($this->nonceKey, $payload)
-            ) {
-                // Run callback
-                if (method_exists($this, "onSubmit")) {
-                    $this->onSubmit();
-                }
-    
-                $this->submitted = true;
-            }
-            else {
-                $this->submitted = false;
-            }
-        }
-
-        return $this->submitted;
-    }
-
-    /**
-     * @brief Check if the form's nonce and data is valid
-     * @return boolean Returns if the form submission is valid
-     */
-    public function isValid() {
-        if (!isset($this->validated)) {
-            // Check for form submission
-            if ($this->isSubmit()) {
-                // Validate the nonce
-                $valid = Crypto::validateNonce(
-                    Request::getPayload()[$this->nonceKey],
-                    $this->name,
-                    $this->uuid,
-                    $this->obid,
-                    $this->ttl,
-                    $this->salt,
-                    $this->pepperLength,
-                    $this->cipherKey
-                );
-    
-                // Return if not valid
-                if (!$valid) {
-                    $this->validated = false;
-                }
-    
-                // Check each input for validity
-                foreach ($this->inputs as $input) {
-                    if (!$input->isValid()) {
-                        $this->validated = false;
-                    }
-                }
-    
-                // Run callback
-                if (method_exists($this, "onValid")) {
-                    $this->onValid();
-                }
-    
-                // Checks passed
-                $this->validated = true;
-            }
-            else {
-                // No submission, not valid
-                $this->validated = false;
-            }
-        }
-
-        return $this->validated;
-    }
-
-    /**
-     * @brief Get an array of the fields' input values
+     * Get an array of the fields' input values
+     * 
      * @return mixed Returns key/value pairs of the form, or false on failure
      */
     public function getValues() {
+
+        // Create values
         $values = array();
 
-        // Get each input value
+        // Loop through inputs
         foreach ($this->inputs as $input) {
             $value = $input->getValue();
+
+            // Get value, if it exists
             if ($value !== false) {
-                $values[$input->slug] = $input->getValue();
+                $values[$input->slug] = $value;
             }
         }
 
@@ -220,15 +159,192 @@ class Form {
     }
 
     /**
-     * @brief Output the form markup to the current output buffer
+     * Initialize this Form
+     */
+    public function init() {
+
+        // Check if we have child atttributes
+        if (is_array($this->childAttributes)) {
+
+            // Count number of children who need them
+            $nChildren = count($this->inputs);
+
+            // Loop through children
+            for ($i = 0; $i < $nChildren; $i++) {
+
+                // Check if the child already has attributes
+                if (is_array($this->inputs[i]->attributes)) {
+
+                    // Merge attributes
+                    $this->inputs[$i]->attributes = array_merge(
+                        $this->inputs[$i]->attributes, $this->childAttributes);
+                }
+                else {
+
+                    // Insert new attributes
+                    $this->inputs[$i]->attributes = $this->childAttributes;
+                }
+            }
+        }
+
+        // Check for submission
+        $this->isSubmit();
+        $this->isValid();
+
+    }
+
+    /**
+     * Check for a submission
+     * 
+     * @return boolean Returns if a submission exists in the request
+     */
+    public function isSubmit() {
+
+        // Get the Request payload
+        $payload = Request::getPayload();
+
+        // Check for the nonce key
+        if (!empty($payload) &&
+            array_key_exists($this->nonceKey, $payload)) {
+            
+            // Valid submission
+            if (method_exists($this, "onSubmit")) {
+
+                // Run onSubmit() callback
+                $this->onSubmit();
+                
+            }
+
+            // Set submitted to true
+            $this->submitted = true;
+        }
+        else {
+
+            // No submission
+            $this->submitted = false;
+
+        }
+
+        // Return results
+        return $this->submitted;
+
+    }
+
+    /**
+     * Check if the form's nonce and data is valid
+     * 
+     * @return boolean Returns if the form submission is valid
+     */
+    public function isValid() {
+
+        // Check for form submission
+        if ($this->isSubmit()) {
+            
+            // Validate the nonce
+            $valid = Crypto::validateNonce(
+                Request::getPayload()[$this->nonceKey],
+                $this->name,
+                $this->uuid,
+                $this->obid,
+                $this->ttl,
+                $this->salt,
+                $this->pepperLength,
+                $this->cipherKey
+            );
+            
+            // Check if nonce is valid
+            if ($valid) {
+
+                // Loop through inputs
+                foreach ($this->inputs as $input) {
+
+                    // Check if input is valid
+                    $valid = $input->isValid();
+
+                    if ($valid !== true) {
+                        // Invalid input
+                        $this->valid = false;
+
+                        // Run onInvalidInput() callback
+                        $this->onInvalidInput($input->slug, $valid);
+
+                        // Break out of loop
+                        break;
+                    }
+                }
+    
+                // Check if inputs were valid
+                if ($valid) {
+
+                    // Run onValid() callback
+                    if (method_exists($this, "onValid")) {
+                        $this->onValid();
+                    }
+        
+                    // Checks passed
+                    $this->valid = true;
+                }
+            }
+            else {
+                // Invalid nonce
+                $this->valid = false;
+
+                // Run invalid form callback
+                $this->onInvalidForm();
+            }
+        }
+
+        return (isset($this->valid) && $this->valid === true);
+    }
+
+    /**
+     * Handle invalid Form Input values
+     * 
+     * @param string $slug Form Input slug which is invalid
+     * @param string $message Invalid exception message descriptor
+     */
+    public function onInvalidInput($slug, $message) {
+        $this->result = false;
+        $this->error = $message;
+    }
+
+    /**
+     * Handle invalid Forms
+     */
+    public function onInvalidForm() {
+        // TODO - Test
+        $this->result = false;
+        $this->error = "This form has expired.  Please try again.";
+    }
+
+    /**
+     * Output the form markup to the current output buffer
      */
     public function show() {
+
         // Output form tag
-        echo 
-            "<form method=\"" . $this->method . "\"" .
+        echo  "<form method=\"" . $this->method . "\"" .
             "action=\"" . $this->action . "\" " .
-            "name=\"" . $this->name . "\">"
-        ;
+            "id=\"form-" . $this->name . "\" ";
+
+        // Form attributes
+        if (is_array($this->attributes)) {
+
+            // Output key/value pairs
+            foreach ($this->attributes as $key => $value) {
+                echo $key . "=\"" . $value . "\" ";
+            }
+
+        }
+        else if (is_string($this->attributes)) {
+
+            // Output string
+            echo $this->attributes;
+
+        }
+
+        // Close form tag
+        echo "name=\"" . $this->name . "\">";
 
         // Create a nonce
         $nonce = Crypto::nonce(
@@ -254,5 +370,7 @@ class Form {
         
         // Closeup form
         echo "</form>";
+
     }
-}
+
+};

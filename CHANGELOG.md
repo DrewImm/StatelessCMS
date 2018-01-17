@@ -1,5 +1,48 @@
 # Changelog
 
+## [1.0.0] - 2018-01-17
+### Breaking Changes
+ - Form member variables have changed for cleanliness.  Please check the Form reference.
+ - Form constructor parameters have been replaced with a single associative array parameter.
+ - FormInput member variables have changed for cleanliness.  Please check the FormInput reference.
+ - FormInput constructor parameters have been replaced with a single associative array parameter.
+ - MenuInput member variables have changed for cleanliness.  Please check the FormInput reference.
+ - MenuInput constructor parameters have been replaced with 3 parameters - label, href, and a data array.
+ - Session attribute for pepper length has changed from `pepperLength` to `pepper_length` for comformity.
+ - 
+
+### Changed
+ - Cleaned up Form::isValid() to be more accurate, clean, and concise.
+ - Cleaned up FormInput methods for performance and cleaner output.
+ - Menu constructor now checks for falsiness of arguments before overriding object members.
+ - Changed Menu class to have a default attribute of "class" => "nav"
+ - Cleaned up MenuItem markup generated.
+ - Response::header() will now throw an error if it does not recognize the response code argument.
+ - Changed default Session name to "session".
+ - Removed tests that fail due soley to PHPUnit, in order to achieve clean testing output.
+ - [Issue #28] Updated coding and documentation style
+
+### Added
+ - Controller class
+ - Database::nRowsWhere() to select a count(*) including a sql WHERE statement.
+ - Form and FormInput validate and filter functionality.
+ - Form::onInvalidInput(), Form::onInvalidForm().
+ - Form `id` markup parameter, to allow the form to be targeted in script or style.
+ - FormInput::setValue() to set a form input's value after submission.
+ - FormInput description, placeholder, validate, and filter attributes.
+ - FormInput "html" attribute, to override a field's html output.
+ - Layout class
+ - Added MenuItem `submenu` attribute to properly allow nested menus
+ - Added MenuItem `link_attributes` attribute to allow more flexibity to menu links.
+
+### Fixed
+ - Fixed a bug where Session::__construct() would leave an attribute array in $cipherKey.
+ - Changed "inval" to "intval" in FormInput.php ln 255 col 45
+ - [Issue #31] Database methods break on single where payload
+ - [Issue #30] Database::nRows returns wrong value
+ - [Issue #29] Doxygen input folder outdated
+ - [Issue #27] Broken Github Links
+
 ## [0.3.2] - 2017-12-24
 ### Changed
  - [Issue #23] Composer license

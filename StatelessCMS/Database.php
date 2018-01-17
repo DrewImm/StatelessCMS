@@ -3,9 +3,10 @@
 namespace Stateless;
 
 /**
- * @brief A database connection
+ * A database connection
  */
 class Database {
+
     private $conn;
     private $server;
     private $username;
@@ -16,7 +17,8 @@ class Database {
     private $isActive;
         
     /**
-     * @brief Creates a database connection and connects to it
+     * Creates a database connection and connects to it
+     * 
      * @param string $server Database server address
      * @param string $username Username to connect as
      * @param string $password Password to connect with
@@ -47,7 +49,8 @@ class Database {
     }
         
     /**
-     * @brief Connect to a database
+     * Connect to a database
+     * 
      * @param string $server Database server address
      * @param string $username Username to connect as
      * @param string $password Password to connect with
@@ -89,7 +92,8 @@ class Database {
     }
 
     /**
-     * @brief Check if the database connection is active
+     * Check if the database connection is active
+     * 
      * @return boolean Returns true if active, otherwise false
      */
     public function isActive() {
@@ -97,7 +101,8 @@ class Database {
     }
 
     /**
-     * @brief Get information about the last error which occurred
+     * Get information about the last error which occurred
+     * 
      * @return string Description of last database error
      */
     public function error() {
@@ -105,7 +110,8 @@ class Database {
     }
 
     /**
-     * @brief Run an unprepared sql statement on the database
+     * Run an unprepared sql statement on the database
+     * 
      * @param string $query The sql query to run
      * @return mixed Returns results on success, false on failure
      */
@@ -115,7 +121,8 @@ class Database {
     }
 
     /**
-     * @brief Run a prepared sql statements and bind the payload
+     * Run a prepared sql statements and bind the payload
+     * 
      * @param string $query The sql query to run
      * @param array $values Array of values to bind to the query.  Default is
      *   empty
@@ -130,7 +137,8 @@ class Database {
     }
 
     /**
-     * @brief Create a table in the database if it doesn't already exist
+     * Create a table in the database if it doesn't already exist
+     * 
      * @param string $table Name of table to be created
      * @param array $columns Array of DatabaseColumn objects
      * @return mixed Returns if the table was created successfully
@@ -191,23 +199,54 @@ class Database {
     }
 
     /**
-     * @brief Query the number of rows in a table
+     * Query the number of rows in a table
+     * 
      * @param string $table Name of the table to query
      * @return mixed Returns the number of rows, or false on failure
      */
     public function nRows($table) {
+        $count = false;
         $table = $this->prefix . $table;
 
-        $results = $this->conn->query(
-            "SELECT COUNT(*) FROM " . $table . ";"
+        $results = $this->select(
+            "SELECT COUNT(*) FROM `" . $table . "`"
         );
 
-        return $results;
+        if (is_array($results) &&
+            count($results) &&
+            array_key_exists("COUNT(*)", $results[0])) {
+            $count = $results[0]["COUNT(*)"];
+        }
+
+        return $count;
     }
 
     /**
-     * @brief Query the database for matching rows.  This function does not
+     * Query the number of rows in a table where an array matches
+     * 
+     * @param string $table Name of the table to query
+     * @param array $where Array of key => value pairs to search by
+     * @return mixed Returns the number of rows, or false on failure
+     */
+    public function nRowsWhere($table, $where) {
+        $count = false;
+        $table = $this->prefix . $table;
+
+        $results = $this->selectBy($table, $where, false, [], "COUNT(*)");
+        
+        if (is_array($results) &&
+            count($results) &&
+            array_key_exists("COUNT(*)", $results[0])) {
+            $count = $results[0]["COUNT(*)"];
+        }
+
+        return $count;
+    }
+
+    /**
+     * Query the database for matching rows.  This function does not
      *   prepare the payload
+     * 
      * @param string $query The sql query to run
      * @return mixed Returns the matching rows as an associative array, or
      *   false on failure.
@@ -227,7 +266,8 @@ class Database {
     }
 
     /**
-     * @brief Query the database for matching rows.  This function does prepare
+     * Query the database for matching rows.  This function does prepare
+     * 
      * @param string $query The sql query to run
      * @param array $where Array of values to select by.  Default is
      *   all rows
@@ -249,7 +289,8 @@ class Database {
     }
 
     /**
-     * @brief Select by key/value pairs
+     * Select by key/value pairs
+     * 
      * @param string $table The database table name to search
      * @param mixed $where Array of key/value pairs to search for, or a string
      *   of where clauses.  If an empty array is passed, all rows will be
@@ -258,6 +299,8 @@ class Database {
      *   Default is none.
      * @param array $values Array of values to bind to a string $where or
      *   $append clause (or both).  Default is an empty array.
+     * @param string $select What to selet.  Default is "*".  This should be
+     *   sanitized first.
      * @return mixed Returns the matching rows as key/value pairs, or false on
      *   failure.
      */
@@ -265,23 +308,31 @@ class Database {
         $table,
         $where = array(),
         $append = false,
-        $values = array()
+        $values = array(),
+        $select = "*"
     ) {
         $table = $this->prefix . $table;
         $rows = false;
-        $query = "SELECT * FROM `" . $table . "`";
+        $query = "SELECT " . $select . " FROM `" . $table . "`";
 
         // Create where clause
         if (!empty($where)) {
             $query .= " WHERE (";
 
             if (is_array($where)) {
+                $i = 0;
+                $length = count($where) -1;
                 foreach ($where as $key => $value) {
                     $query .= $key;
                     $query .= "=:" . $key;
-                    $query .= " AND ";
+
+                    if ($i < $length) {
+                        $query .= " AND ";
+
+                    }
+
+                    $i++;
                 }
-                $query = rtrim($query, " AND");
             }
             else if (is_string($where)) {
                 $query .= $where;
@@ -306,7 +357,8 @@ class Database {
     }
 
     /**
-     * @brief Resets row's id to the largest current id
+     * Resets row's id to the largest current id
+     * 
      * @param string $table The name of the database table
      * @param string $idKey The key of the id column for this table
      * @return mixed Returns the highest id, or 1 if no rows exist
@@ -342,7 +394,8 @@ class Database {
     }
     
     /**
-     * @brief Insert a row into the database
+     * Insert a row into the database
+     * 
      * @param string $table Database table to insert into
      * @param array $payload Key/value pairs of data to insert
      * @return mixed Returns non-false on success, false on failure
@@ -378,7 +431,8 @@ class Database {
     }
 
     /**
-     * @brief Get the last insert Id
+     * Get the last insert Id
+     * 
      * @return integer Returns the last insert Id, or 0 if none exist
      */
     public function lastInsertId() {
@@ -386,7 +440,8 @@ class Database {
     }
 
     /**
-     * @brief Update a row in the table
+     * Update a row in the table
+     * 
      * @param string $table The db table to update a row in
      * @param array $payload Key/value pairs to update to
      * @param array $where Key/value pairs to search by
@@ -406,11 +461,16 @@ class Database {
         if (!empty($where)) {
             $query .= " WHERE (";
 
+            $i = 0;
+            $length = count($where) - 1;
             // Loop through where keys
             foreach ($where as $key => $value) {
-                $query .= $key . " = ? AND ";
+                $query .= $key . " = ?";
+
+                if ($i < $length) {
+                    $query .= " AND ";
+                }
             }
-            $query = rtrim($query, " AND");
 
             $query .= ")";
         }
@@ -423,7 +483,8 @@ class Database {
     }
 
     /**
-     * @brief Delete rows from table
+     * Delete rows from table
+     * 
      * @param string $table Table to delete from
      * @param array $where Key/value pairs to search for
      * @return mixed Returns non-false on success, or false on error
@@ -436,14 +497,20 @@ class Database {
             $query .= " WHERE (";
             
             // Loop through where keys
+            $i = 0;
+            $length = count($where) - 1;
             foreach ($where as $key => $value) {
-                $query .= $key . "=:" . $key . " AND ";
+                $query .= $key . "=:" . $key;
+
+                if ($i < $length) {
+                    $query .= " AND ";
+                }
             }
-            $query = rtrim($query, " AND");
             $query .= ")";
         }
 
         // Execute the query and return the results
         return $this->preparedQuery($query, $where);
     }
-}
+
+};

@@ -3,20 +3,37 @@
 namespace Stateless;
 
 /**
- * @brief A Session tracks the php session
+ * A Session tracks the php session
  */
 class Session {
-    private static $id; /**< Session id */
-    private static $uuid; /**< Session user Id */
-    private static $nonce; /**< Session nonce */
-    private static $userAgent; /**< Session user agent */
-    private static $address; /**< Session client IP address */
-    private static $expires; /**< Time since epoch the session expires */
-    private static $name = "session"; /**< Session name, for verification.  Default is "session" */
-    private static $prefix; /**< Session prefix */
+
+    /** Session id */
+    private static $id;
+
+    /** Session user Id */
+    private static $uuid;
+
+    /** Session nonce */
+    private static $nonce;
+
+    /** Session user agent */
+    private static $userAgent;
+
+    /** Session client IP address */
+    private static $address;
+
+    /** Time since epoch the session expires */
+    private static $expires;
+
+    /** Session name, for verification.  Default is "session" */
+    private static $name = "session";
+
+    /** Session prefix */
+    private static $prefix;
 
     /**
-     * @brief Create a new session
+     * Create a new Session
+     * 
      * @param mixed $cipherKey Cipher key to encrypt the nonce field  or Array
      *  of key value pairs
      * @param integer $uuid User ID to associate the nonce with.  Default is 0
@@ -37,6 +54,7 @@ class Session {
         // Check if first parameter is array
         if (is_array($cipherKey)) {
             $data = $cipherKey;
+            $cipherKey = false;
 
             if (array_key_exists("cipher_key", $data)) {
                 $cipherKey = $data["cipher_key"];
@@ -54,8 +72,8 @@ class Session {
                 $salt = $data["salt"];
             }
 
-            if (array_key_exists("pepperLength", $data)) {
-                $pepperLength = $data["pepperLength"];
+            if (array_key_exists("pepper_length", $data)) {
+                $pepperLength = $data["pepper_length"];
             }
 
             if (array_key_exists("prefix", $data)) {
@@ -109,7 +127,7 @@ class Session {
     }
 
     /**
-     * @brief Destroy the session
+     * Destroy the session
      */
     public static function destroy() {
         if (!empty($_SESSION)) {
@@ -119,7 +137,8 @@ class Session {
     }
 
     /**
-     * @brief Check if the session is active (but maybe not valid)
+     * Check if the session is active (but maybe not valid)
+     * 
      * @param string $prefix The session prefix to check for
      * @return boolean Returns if the session is active (but maybe not valid)
      */
@@ -131,7 +150,8 @@ class Session {
     }
 
     /**
-     * @brief Check if the session is active and valid
+     * Check if the session is active and valid
+     * 
      * @param string $cipherKey Cipher key to encrypt the nonce field
      * @param integer $uuid User id to validate.  Default is 0
      * @param integer $ttl Time to live of the session (days).  Default is 7
@@ -206,7 +226,8 @@ class Session {
     }
 
     /**
-     * @brief Get the user ID
+     * Get the user ID
+     * 
      * @param $prefix Session prefix to fetch the session $uuid from
      * @return mixed Returns the user ID or false on failure
      */
@@ -221,4 +242,5 @@ class Session {
         // User Id not found
         return false;
     }
-}
+
+};

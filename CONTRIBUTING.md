@@ -53,10 +53,11 @@ Also, please lint your code and ensure you do not mess up any whitespace!
 Please document your code while writing it, using Doxygen's style.
 
 ```c
-/**< Member variables look like this. */
+/** Member variables look like this. */
 
 /**
- * @brief Code blocks look like this
+ * Code blocks look like this
+ *
  * @param string myString Parameters look like this
  * @return boolean Returns look like this
  */

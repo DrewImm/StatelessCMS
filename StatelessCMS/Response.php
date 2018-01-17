@@ -3,11 +3,13 @@
 namespace Stateless;
 
 /**
- * @brief Response is a singleton that holds data about the soon-to-be http response
+ * Response is a singleton that holds data about the soon-to-be http response
  */
 class Response {
+
     /**
-     * @brief Send a raw header by status code
+     * Send a raw header by status code
+     * 
      * @param mixed $header (int) HTTP Response code or (string) HTTP
      *  Response header
      * @param boolean $exit If the script should exit after sending the
@@ -266,6 +268,10 @@ class Response {
                 case 511:
                     $header = "511 Network Authentication Required";
                 break;
+
+                default:
+                    throw new \Exception ("Response::header does not exist.");
+                break;
             }
 
             $header = $protocol . " " . $header;
@@ -288,7 +294,8 @@ class Response {
     }
 
     /**
-     * @brief Redirect the browser to $location
+     * Redirect the browser to $location
+     * 
      * @param string $location URL to redirect to
      */
     public static function redirect($location) {
@@ -297,13 +304,15 @@ class Response {
     }
 
     /**
-     * @brief Send a Javascript Web Token (JWT) as a javascript variable in the
+     * Send a Javascript Web Token (JWT) as a javascript variable in the
      *  response body.  Should only be used if utilizing https and the client
      *  is authenticated to prevent broadcasting the jwt as clear-text.
+     * 
      * @param string $token JWT to send
      * @param string $key Javascript variable name.  Default is "AUTH_KEY"
      */
     public static function sendToken($token, $key = "AUTH_KEY") {
         echo "<script>const " . $key . " = \"" . $token . "\";</script>";
     }
-}
+
+};
