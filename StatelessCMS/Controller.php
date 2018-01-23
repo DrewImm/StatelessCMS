@@ -9,28 +9,28 @@ namespace Stateless;
 class Controller {
 
     /** Form to display in the View. */
-    protected $form;
+    public $form;
 
     /** View to display. */
-    protected $view;
+    public $view;
 
     /** Role required to access this resource. */
-    protected $roleRequired;
+    public $roleRequired;
 
     /** Error response code to respond with */
-    protected $response;
+    public $response;
     
     /**
      * Route Requests
      */
-    protected function route() {
+    public function route() {
         throw new \Exception ("Your Controller must have a route() function");
     }
     
     /**
      * Show the View
      */
-    protected function show() {
+    public function show() {
         throw new \Exception ("Your Controller must have a show() function");
     }
 
@@ -39,7 +39,7 @@ class Controller {
      * 
      * @return boolean Returns if a View is present
      */
-    protected function isValid() {
+    public function isValid() {
         return ($this->view);
     }
 

@@ -144,8 +144,8 @@ class Database {
      * @return mixed Returns if the table was created successfully
      */
     public function createTable($table, $columns) {
-        $table = $this->prefix . $table;
-        $query = "CREATE TABLE IF NOT EXISTS `$table` (";
+        $table = $this->cleanTable($table);
+        $query = "CREATE TABLE IF NOT EXISTS $table (";
         $key = false;
 
         // Add columns
@@ -206,10 +206,10 @@ class Database {
      */
     public function nRows($table) {
         $count = false;
-        $table = $this->prefix . $table;
+        $table = $this->cleanTable($table);
 
         $results = $this->select(
-            "SELECT COUNT(*) FROM `" . $table . "`"
+            "SELECT COUNT(*) FROM " . $table
         );
 
         if (is_array($results) &&
@@ -230,7 +230,6 @@ class Database {
      */
     public function nRowsWhere($table, $where) {
         $count = false;
-        $table = $this->prefix . $table;
 
         $results = $this->selectBy($table, $where, false, [], "COUNT(*)");
         
@@ -311,9 +310,9 @@ class Database {
         $values = array(),
         $select = "*"
     ) {
-        $table = $this->prefix . $table;
+        $table = $this->cleanTable($table);
         $rows = false;
-        $query = "SELECT " . $select . " FROM `" . $table . "`";
+        $query = "SELECT " . $select . " FROM " . $table;
 
         // Create where clause
         if (!empty($where)) {
@@ -364,7 +363,7 @@ class Database {
      * @return mixed Returns the highest id, or 1 if no rows exist
      */
     public function resetId($table, $idKey = "id") {
-        $table = $this->prefix . $table;
+        $table = $this->cleanTable($table);
         $query = "SELECT @max := MAX(" . $idKey . ")+ 1 FROM " . $table . ";";
         $id = $this->query($query);
 
@@ -401,7 +400,7 @@ class Database {
      * @return mixed Returns non-false on success, false on failure
      */
     public function insert($table, $payload) {
-        $table = $this->prefix . $table;
+        $table = $this->cleanTable($table);
         $query = "INSERT INTO " . $table . " (";
 
         // Loop through payload keys
@@ -448,7 +447,7 @@ class Database {
      * @return mixed Returns non-false on success, or false on error
      */
     public function update($table, $payload, $where) {
-        $table = $this->prefix . $table;
+        $table = $this->cleanTable($table);
         $query = "UPDATE " . $table . " SET ";
 
         // Loop through payload keys
@@ -490,7 +489,7 @@ class Database {
      * @return mixed Returns non-false on success, or false on error
      */
     public function deleteBy($table, $where) {
-        $table = $this->prefix . $table;
+        $table = $this->cleanTable($table);
         $query = "DELETE FROM " . $table;
 
         if (!empty($where)) {
@@ -511,6 +510,17 @@ class Database {
 
         // Execute the query and return the results
         return $this->preparedQuery($query, $where);
+    }
+
+    /**
+     * Clean the table name and prepend the table prefix
+     * 
+     * @param string $table Table name to clean
+     */
+    public function cleanTable($table) {
+
+        return "`" . $this->prefix . $table . "`";
+
     }
 
 };

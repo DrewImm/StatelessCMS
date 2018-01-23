@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.0] - 2018-01-23
+
+### Added
+ - [Issue #34] Created Database::cleanTable() to sanitize table names
+
+### Fixed
+ - [Issue #35] Controller protected members must be public
+
 ## [1.0.0] - 2018-01-17
 ### Breaking Changes
  - Form member variables have changed for cleanliness.  Please check the Form reference.
