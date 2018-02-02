@@ -469,6 +469,8 @@ class Database {
                 if ($i < $length) {
                     $query .= " AND ";
                 }
+
+                $i++;
             }
 
             $query .= ")";
@@ -504,6 +506,8 @@ class Database {
                 if ($i < $length) {
                     $query .= " AND ";
                 }
+
+                $i++;
             }
             $query .= ")";
         }

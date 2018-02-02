@@ -243,4 +243,16 @@ class Request {
         return Request::$token;
     }
 
+    /**
+     * Set a key/value pair of the request payload
+     * 
+     * @param string $key Key of the pair
+     * @param mixed $value Value of the pair
+     */
+    public static function setPayloadKey($key, $value) {
+
+        Request::$payload[$key] = $value;
+
+    }
+
 };
