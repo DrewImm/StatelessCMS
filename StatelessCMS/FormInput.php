@@ -25,6 +25,9 @@ class FormInput {
     /** Input description */
     public $description;
 
+    /** Input hint */
+    public $hint;
+
     /** Input current value */
     public $value;
 
@@ -38,10 +41,10 @@ class FormInput {
     public $attributes = array();
 
     /** If the label should break line after */
-    public $inlineLabel;
+    public $inlineLabel; // TODO - No longer in use, remove on next breaking
 
     /** If the field should break line after */
-    public $inlineField;
+    public $inlineField; // TODO - No longer in use, remove on next breaking
 
     /** If the field should be required */
     public $required;
@@ -52,8 +55,14 @@ class FormInput {
     /** Callback function to validate this form input */
     public $validateCallback;
 
+    /** Array of arguments to pass to validation callback */
+    public $validateArguments;
+
     /** Callback function to filter this form input */
     public $filterCallback;
+
+    /** Array of arguments to pass to filter callback */
+    public $filterArguments;
 
     /** Minimum numerical value (for number inputs) */
     public $min;
@@ -66,6 +75,8 @@ class FormInput {
 
     /** Maximum string-length */
     public $maxLength;
+
+    private $isValid;
 
     /**
      * Construct a new FormInput object
@@ -105,6 +116,11 @@ class FormInput {
             // Description
             if (array_key_exists("description", $data)) {
                 $this->description = $data["description"];
+            }
+
+            // Hint
+            if (array_key_exists("hint", $data)) {
+                $this->hint = $data["hint"];
             }
 
             // Value
@@ -154,12 +170,22 @@ class FormInput {
 
             // Validate callback
             if (array_key_exists("validate", $data)) {
-                $this->validate = $data["validate"];
+                $this->validateCallback = $data["validate"];
+            }
+
+            // Validate callback arguments
+            if (array_key_exists("validate_arguments", $data)) {
+                $this->validateArguments = $data["validate_arguments"];
             }
 
             // Filter callback
             if (array_key_exists("filter", $data)) {
-                $this->filter = $data["filter"];
+                $this->filterCallback = $data["filter"];
+            }
+
+            // Filter callback
+            if (array_key_exists("filter_arguments", $data)) {
+                $this->filterArguments = $data["filter_arguments"];
             }
 
             // Minimum numerical value
@@ -224,25 +250,37 @@ class FormInput {
     /**
      * Set the value for this input
      * 
-     * @param mixed $value New value for this input
-     * @return bool Returns if the input value was set
+     * @param mixed $value New value for this 
      */
     public function setValue($value) {
-        // Check if the request has the value
-        if ($this->hasValue()) {
-            Request::$payload[$this->slug] = $value;
 
-            return true;
-        }
-        else {
-            return false;
-        }
+        $this->value = $value;
+        Request::setPayloadKey($this->slug, $value);
+
     }
     
     /**
      * Output the input markup to the current output buffer
      */
     public function show() {
+
+        // Append valid/invalid class
+        if ($this->isValid !== null) {
+
+            if (!array_key_exists("class", $this->attributes)) {
+                $this->attributes["class"] = "";
+            }
+
+            if ($this->isValid) {
+                $this->attributes["valid"] = "true";
+                $this->attributes["class"] .= " is-valid";
+            }
+            else {
+                $this->attributes["invalid"] = "true";
+                $this->attributes["class"] .= " invalid";
+            }
+
+        }
 
         // Attributes to be passed to the input
         $attributes = "";
@@ -269,13 +307,13 @@ class FormInput {
 
 
         // Clean value for output
-        if ($this->type !== "html") {
-            $this->value = htmlspecialchars($this->value);            
+        if ($this->type !== "html" && $this->type !== "file") {
+            $this->value = htmlspecialchars($this->value);
         }
 
         // Push slug to attributes
         if (!empty($this->slug)) {
-            $this->attributes["id"] = "_" . $this->slug;
+            $this->attributes["id"] = rtrim("_" . $this->slug, "[]");
             $this->attributes["name"] = $this->slug;
         }
 
@@ -337,10 +375,6 @@ class FormInput {
                 echo "<p class=\"description\">" . $this->description . "</p>";
             }
 
-            // Output line-break
-            else if (!$this->inlineLabel) {
-                echo "<br>";
-            }
 
         }
 
@@ -369,7 +403,7 @@ class FormInput {
                     // Output children
                     if (!empty($this->children) && is_array($this->children)) {
                         foreach ($this->children as $key => $value) {
-                            if ($value === $this->value) {
+                            if ((string) $value === (string) $this->value) {
                                 echo sprintf(
                                     "<option value=\"%s\" selected>%s</option>",
                                     $value,
@@ -393,6 +427,15 @@ class FormInput {
                     echo $this->value;
                 break;
     
+                case "file":
+                    // Output standard input
+                    echo sprintf(
+                        "<input type=\"%s\" %s />",
+                        $this->type,
+                        $attributes
+                    );
+                break;
+    
                 default:
                     // Output standard input
                     echo sprintf(
@@ -405,10 +448,13 @@ class FormInput {
             }
         }
 
-        // Output linebreak
-        if ($this->type !== "hidden" && !$this->inlineField) {
-            echo "<br>";
+        // Display hint
+        if ($this->isValid === false && $this->hint) {
+
+            echo "<p class=\"hint\">" . $this->hint . "</p>";
+
         }
+
     }
 
     /**
@@ -434,36 +480,50 @@ class FormInput {
      * @return boolean Returns if the input field is valid
      */
     public function isValid() {
+
+        // Create name for errors
+        $name = ($this->label) ? $this->label : 
+            ucwords(str_replace("_", " ", $this->slug));
+
         // Check if it's a button
         if ($this->type === "submit" || $this->type === "button") {
             return true;
         }
 
         // If not required and not filled out, it is valid
-        if (!$this->required && empty($this->getValue())) {
+        if (!$this->required && 
+            (empty($this->getValue()) && empty($_FILES))) {
+            
             return true;
+
         }
 
         // If is required and not filled out, it is NOT valid
-        if ($this->required && empty($this->getValue())) {
-            return "This field is required.";
+        if ($this->required && $this->getValue() !== "0" &&
+            empty($this->getValue())) {
+
+            $this->isValid = false;
+            return $name . " is required.";
         }
 
         // At this point, if it has no value, it is not valid
-        if (!$this->hasValue()) {
-            return "This field was not found.";
+        if (!$this->hasValue() && empty($_FILES)) {
+
+            $this->isValid = false;
+            return $name . " was not found.";
         }
 
         // Pull the value and the length
-        $value = $this->getValue();
+
+        $value = $this->type === "file" ? $_FILES : $this->getValue();
 
         // Run validate function
         if ($this->validateCallback) {
-            if (!($this->validateCallback)($value)) {
-                $name = ($this->label) ? $this->label : $this->slug;
+            if (!($this->validateCallback)($value, $this->validateArguments)) {
 
-                return "Field `" . $name . "`: " . 
-                    "This field is not valid.";
+                $this->isValid = false;
+
+                return $name . " is not valid.";
             }
         }
 
@@ -474,8 +534,9 @@ class FormInput {
     
             // Check minLength
             if (isset($this->minLength) && $length < $this->minLength) {
-                return
-                    "This field must be at least " .
+
+                $this->isValid = false;
+                return $name . " must be at least " .
                     $this->minLength .
                     " characters long."
                 ;
@@ -483,8 +544,9 @@ class FormInput {
 
             // Check maxLength
             if (isset($this->maxLength) && $length > $this->maxLength) {
-                return
-                    "This field must not be longer than " .
+
+                $this->isValid = false;
+                return $name . " must not be longer than " .
                     $this->maxLength .
                     " characters."
                 ;
@@ -497,21 +559,27 @@ class FormInput {
 
             // Check minLength
             if (isset($this->min) && $value < $this->min) {
-                return "This value must be at least " . $this->min . ".";
+
+                $this->isValid = false;
+                return $name . " must be at least " . $this->min . ".";
             }
 
             // Check maxLength
             if (isset($this->max) && $value > $this->max) {
-                return "This value must not be larger than " . $this->max . ".";
+
+                $this->isValid = false;
+                return $name . " must not be larger than " . $this->max . ".";
             }
         }
 
         // All checks passed
 
+        $this->isValid = true;
+
         // Run filter function
         if ($this->filterCallback) {
             $this->setValue(
-                ($this->filterCallback)($value)
+                ($this->filterCallback)($value, $this->filterArguments)
             );
         }
 

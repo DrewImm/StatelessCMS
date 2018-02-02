@@ -302,6 +302,13 @@ class Response {
         header ("Location: " . $location);
         exit;
     }
+    
+    /**
+     * Refresh the current page
+     */
+    public static function refresh() {
+        header("Refresh: 0");
+    }
 
     /**
      * Send a Javascript Web Token (JWT) as a javascript variable in the

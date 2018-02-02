@@ -255,6 +255,8 @@ class Form {
             // Check if nonce is valid
             if ($valid) {
 
+                $this->valid = true;
+
                 // Loop through inputs
                 foreach ($this->inputs as $input) {
 
@@ -262,6 +264,7 @@ class Form {
                     $valid = $input->isValid();
 
                     if ($valid !== true) {
+
                         // Invalid input
                         $this->valid = false;
 
@@ -270,11 +273,12 @@ class Form {
 
                         // Break out of loop
                         break;
+                        
                     }
                 }
     
                 // Check if inputs were valid
-                if ($valid) {
+                if ($this->valid) {
 
                     // Run onValid() callback
                     if (method_exists($this, "onValid")) {
