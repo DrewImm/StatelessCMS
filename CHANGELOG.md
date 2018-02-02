@@ -1,5 +1,38 @@
 # Changelog
 
+## [1.2.0] - 2018-02-02
+
+## Added
+
+- [Issue #57] Add Response::refresh()
+- [Issue #56] Create Request::setPayloadKey()
+- [Issue #45] Passing arguments to validators and filters
+- [Issue #44] FormInput should have a hint
+- [Issue #37] Controller should allow nesting
+
+## Fixed
+
+- [Issue #55] Form::isValid() should show form name instead of "This field"
+- [Issue #54] (FormInput) Required check edge-case `0`
+- [Issue #53] FormInput::isValid() should check $_FILES for empty
+- [Issue #52] FormInput::isValid() should clean-up slug before output
+- [Issue #51] FormInput::show() specific display for `file` type
+- [Issue #50] FormInput::show() select inputs should cast to string
+- [Issue #49] FormInput::show() should trim square brackets off ID attribute
+- [Issue #48] FormInput::show() should not run `file` type inputs through htmlspecialchars()
+- [Issue #47] FormInput::show should add valid state
+- [Issue #46] FormInput::setValue() doesn't work
+- [Issue #42] Form::isValid should hold $valid in object scope instead of method scope
+- [Issue #40] Database::delete() foreach does not iterate $i
+- [Issue #39] Database::update() foreach loop does not iterate $i
+- [Issue #38] Controller::route() and show() should have default methods
+- [Issue #36] Check camel case/snake case members
+
+## Changed
+
+- [Issue #43] FormInput::show() should not display line breaks
+
+
 ## [1.1.0] - 2018-01-23
 
 ### Added
