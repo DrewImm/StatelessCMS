@@ -1,8 +1,22 @@
 # Changelog
 
+## [1.2.1] - 2018-02-10
+
+This update allows for multiple forms per view, MenuItems to get ".active" based
+on broad match, and minor other bugfixes
+
+### Fixed
+
+ - [Issue #59] Form - Check which form submission
+ - [Issue #60] MenuItem - Broad active match
+ - [Issue #61] Form::isValid() - Input validation should be optional
+ - [Issue #62] FormInput::show() should run `htmlspecialchars_decode`
+ - [Issue #63] FormInput::show() should prepend an underscore in the label's `for` field
+
+
 ## [1.2.0] - 2018-02-02
 
-## Added
+### Added
 
 - [Issue #57] Add Response::refresh()
 - [Issue #56] Create Request::setPayloadKey()
@@ -10,7 +24,7 @@
 - [Issue #44] FormInput should have a hint
 - [Issue #37] Controller should allow nesting
 
-## Fixed
+### Fixed
 
 - [Issue #55] Form::isValid() should show form name instead of "This field"
 - [Issue #54] (FormInput) Required check edge-case `0`
@@ -28,7 +42,7 @@
 - [Issue #38] Controller::route() and show() should have default methods
 - [Issue #36] Check camel case/snake case members
 
-## Changed
+### Changed
 
 - [Issue #43] FormInput::show() should not display line breaks
 
