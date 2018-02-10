@@ -28,6 +28,11 @@ class MenuItem {
     /** Menu object as a nested submenu */
     public $submenu;
 
+    /** Broad Active allows the menu item to receive .active even if the URL
+     *      isn't an exact match
+     */
+    public $broadActive = false; 
+
     /**
      * Create a new menu item
      * 
@@ -84,6 +89,11 @@ class MenuItem {
                 $this->submenu = $data["submenu"];
             }
 
+            // Broad active match
+            if (array_key_exists("broad_active", $data)) {
+                $this->broadActive = $data["broad_active"];
+            }
+
         }
 
     }
@@ -132,12 +142,20 @@ class MenuItem {
 
         echo ">";
 
+        // TODO - Remove
+        if ($this->href === "/messages/inbox-trash") {
+
+           $break = true; 
+
+        }
+
         // Check if this link matches the request path
         $activeClass = false;
         if ($this->href === Request::getPath() ||
             (
                 strpos(Request::getPath(), $this->href) !== false &&
-                $this->href !== "/"
+                $this->href !== "/" &&
+                $this->broadActive
             )) {
                 
             if (!$this->linkAttributes ||
