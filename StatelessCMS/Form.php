@@ -203,25 +203,32 @@ class Form {
         // Get the Request payload
         $payload = Request::getPayload();
 
-        // Check for the nonce key
-        if (!empty($payload) &&
-            array_key_exists($this->nonceKey, $payload)) {
-            
-            // Valid submission
-            if (method_exists($this, "onSubmit")) {
+        $this->submitted = false;
 
-                // Run onSubmit() callback
-                $this->onSubmit();
-                
+        // Check the payload
+        if (!empty($payload)) {
+
+            // Check the form name
+            if (array_key_exists("__fname", $payload) &&
+                $payload["__fname"] === $this->name) {
+
+                // Check nonce
+                if (array_key_exists($this->nonceKey, $payload)) {
+
+                    // Valid submission
+                    if (method_exists($this, "onSubmit")) {
+
+                        // Run onSubmit() callback
+                        $this->onSubmit();
+
+                    }
+
+                    // Set submitted to true
+                    $this->submitted = true;
+
+                }
+
             }
-
-            // Set submitted to true
-            $this->submitted = true;
-        }
-        else {
-
-            // No submission
-            $this->submitted = false;
 
         }
 
@@ -233,9 +240,11 @@ class Form {
     /**
      * Check if the form's nonce and data is valid
      * 
+     * @param boolean $checkInput (Optional) If the Form should also validate input.
+     *  Default is true.
      * @return boolean Returns if the form submission is valid
      */
-    public function isValid() {
+    public function isValid($checkInput = true) {
 
         // Check for form submission
         if ($this->isSubmit()) {
@@ -257,23 +266,27 @@ class Form {
 
                 $this->valid = true;
 
-                // Loop through inputs
-                foreach ($this->inputs as $input) {
+                // Validate input fields
+                if ($checkInput) {
 
-                    // Check if input is valid
-                    $valid = $input->isValid();
+                    // Loop through inputs
+                    foreach ($this->inputs as $input) {
 
-                    if ($valid !== true) {
+                        // Check if input is valid
+                        $valid = $input->isValid();
 
-                        // Invalid input
-                        $this->valid = false;
+                        if ($valid !== true) {
 
-                        // Run onInvalidInput() callback
-                        $this->onInvalidInput($input->slug, $valid);
+                            // Invalid input
+                            $this->valid = false;
 
-                        // Break out of loop
-                        break;
-                        
+                            // Run onInvalidInput() callback
+                            $this->onInvalidInput($input->slug, $valid);
+
+                            // Break out of loop
+                            break;
+                            
+                        }
                     }
                 }
     
@@ -349,6 +362,10 @@ class Form {
 
         // Close form tag
         echo "name=\"" . $this->name . "\">";
+
+        // Form name field
+        echo "<input type=\"hidden\" name=\"__fname\" value=\"" . $this->name .
+            "\" />";
 
         // Create a nonce
         $nonce = Crypto::nonce(

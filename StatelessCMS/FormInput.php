@@ -362,10 +362,17 @@ class FormInput {
             }
         }
 
+        // Decode value HTML special chars
+        if ($this->type !== "file") {
+
+            $this->value = htmlspecialchars_decode($this->value);
+            
+        }
+
         // Output label
         if (!empty($this->label)) {
             echo sprintf(
-                "<label for=\"%s\">%s</label>",
+                "<label for=\"_%s\">%s</label>",
                 $this->slug,
                 $this->label
             );
@@ -481,6 +488,11 @@ class FormInput {
      */
     public function isValid() {
 
+        // TODO - REmove
+        if ($this->slug === "location") {
+            $break = true;
+        }
+
         // Create name for errors
         $name = ($this->label) ? $this->label : 
             ucwords(str_replace("_", " ", $this->slug));
@@ -518,13 +530,17 @@ class FormInput {
         $value = $this->type === "file" ? $_FILES : $this->getValue();
 
         // Run validate function
-        if ($this->validateCallback) {
-            if (!($this->validateCallback)($value, $this->validateArguments)) {
+        if (!empty($value)) {
+            
+            if ($this->validateCallback) {
+                if (!($this->validateCallback)($value, $this->validateArguments)) {
 
-                $this->isValid = false;
+                    $this->isValid = false;
 
-                return $name . " is not valid.";
+                    return $name . " is not valid.";
+                }
             }
+
         }
 
         // String checks
