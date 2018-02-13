@@ -40,9 +40,8 @@ class Request {
      */
     public static function getPath() {
         if (!isset(Request::$path)) {
-            Request::$path = filter_input(
-                INPUT_SERVER,
-                "REQUEST_URI",
+            Request::$path = filter_var(
+                parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH),
                 FILTER_SANITIZE_URL
             );
 
@@ -96,9 +95,15 @@ class Request {
     public static function getDomain() {
         if (!isset(Request::$domain)) {
             // Pull domains
-            Request::$domain = filter_input(
-                INPUT_SERVER,
-                "SERVER_NAME",
+            Request::$domain = filter_var(
+                $_SERVER["HTTP_HOST"],
+                FILTER_SANITIZE_URL
+            );
+        }
+        if (!isset(Request::$domain)) {
+            // Pull domains
+            Request::$domain = filter_var(
+                $_SERVER["SERVER_NAME"],
                 FILTER_SANITIZE_URL
             );
         }
@@ -145,9 +150,8 @@ class Request {
     public static function getMethod() {
         if (!isset(Request::$method)) {
             // Pull method
-            Request::$method = filter_input(
-                INPUT_SERVER,
-                "REQUEST_METHOD",
+            Request::$method = filter_var(
+                $_SERVER["REQUEST_METHOD"],
                 FILTER_SANITIZE_STRING
             );
     
