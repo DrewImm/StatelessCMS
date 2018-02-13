@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.2.2] - 2018-02-13
+
+### Fixed
+
+- [Issue #65] Request - filter_input does not properly retrieve variables on some shared hosting
+
 ## [1.2.1] - 2018-02-10
 
 This update allows for multiple forms per view, MenuItems to get ".active" based
