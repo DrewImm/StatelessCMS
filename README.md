@@ -1,8 +1,8 @@
 # StatelessCMS
-Headless content management system
+Object-oriented PHP building-blocks for websites and webapps.
 
 ## Introduction
-StatelessCMS is a headless PHP framework designed for creating database-driven PHP applications.
+StatelessCMS is a headless PHP framework designed for creating database-driven PHP applications, "headless" meaning there is no existing front-end.  StatelessCMS isn't an app or a CMS itself - it just gives you the building blocks to create one yourself.
 
 ## Installation
 ### Minimum Requirements
@@ -22,37 +22,34 @@ Download the latest release from [https://github.com/StatelessSoftware/Stateless
 If you would like the live development branch instead, download or clone from github.  [https://github.com/StatelessSoftware/StatelessCMS.git](https://github.com/StatelessSoftware/StatelessCMS.git)
 
 ## Setting up your first project
-Although you are free to use any directory structure you choose, the common structure for StatelessCMS is as follows.  For now, you can just create the public folder, index.php, and the lib folder.
+Although you are free to use any directory structure you choose, the common basic structure for StatelessCMS is as follows.  Don't worry too much about the specifics - we'll create each part step by step.
 
 ```
 |- app
+    |- Controller
     |- Form
+    |- FormInput
     |- Layout
     |- Menu
     |- Model
     |- View
+    |- app.php
+    |- functions.php
+|- conf
+    |- app.conf.php
 |- public
     |- css
     |- js
+    |- .htaccess
     |- index.php
-|- script
-    |- test.sh
-|- test
-    |- js
-    |- php
 |- vendor
-    |- stateless-cms
-        |- stateless
+    |- stateless
 
 ```
-
-Look familiar?
-If you didn't already, install StatelessCMS to vendor/stateless-cms/stateless.
+If you didn't already, install StatelessCMS to vendor/stateless (follow installation instructions above)
 
 ## Getting started
 Open public/index.php.  Insert the following code:
-
-*If you downloaded and installed StatelessCMS without using composer, change ../vendor/autoload.php to your StatelessCMS.php file*
 
 ```php
 <?php
@@ -63,6 +60,11 @@ require_once("../vendor/autoload.php");
 echo "Home";
 ```
 
+*If you downloaded and installed StatelessCMS without using Composer, change ../vendor/autoload.php to your StatelessCMS.php file*
+
+### About public/index.php
+This file is the entry point, meaning it is the start of the program.  For now, we will use it to show our examples.  Later, we can use it to startup our application.
+
 ## Test
 Open a browser and navigate to localhost/public/
 You should see Home.
@@ -72,9 +74,10 @@ Ensure your httpd document root is set to public/
 Now navigate to localhost/ and you should see Home
 
 ## Enable mod_rewrite (Clean URLs)
-1. Install/enable the mod_rewrite module
-2. In a directory block for `public`, set `AllowOverride All`
-3. Copy the following htaccess file to public/.htaccess
+1. In a directory block for `public`, set `AllowOverride All`
+2. Copy the following htaccess file to public/.htaccess
+
+**You may need to install mod_rewrite**
 
 ```
 <IfModule mod_rewrite.c>
@@ -115,3 +118,5 @@ switch (Request::getPath()) {
 
 }
 ```
+
+Load up `localhost/about` in your browser, you should see "Read all about us!"
