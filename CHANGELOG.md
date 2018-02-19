@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.3] - 2018-02-18
+
+v1.2.3 Addresses documentation, cleaning up the tutorial, and making sure everything is up-to-date and in sync with the entire project.
+
+### Documentation
+
+- [Issue #66] Readme - Folder structure should be updated
+- Updated year in LICENSE.md
+
 ## [1.2.2] - 2018-02-13
 
 ### Fixed
