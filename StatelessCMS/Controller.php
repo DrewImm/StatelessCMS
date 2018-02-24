@@ -26,6 +26,9 @@ class Controller {
     /** Error response code to respond with */
     public $response;
 
+    /** Default 404 View */
+    public $default404;
+
     /**
      * Start the controller
      * 
@@ -33,9 +36,22 @@ class Controller {
      */
     public function start() {
 
+        // Route the controller
         $this->route();
 
+        // Check the view
+        if (!$this->view) {
+
+            // Set 404 response
+            $this->response = 404;
+            $this->view = $default404;
+
+        }
+
+        // Check if a view was set
         if ($this->isValid()) {
+
+            // Show the view
             $this->show();
 
             return true;
@@ -64,6 +80,7 @@ class Controller {
             $this->response = $this->subcontroller->response;
     
         }
+
     }
 
     /**
