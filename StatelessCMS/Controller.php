@@ -108,4 +108,84 @@ class Controller {
         return ($this->view);
     }
 
+    /**
+     * Show the results of the Controller
+     */
+    public function show() {
+
+        // Check for a view
+        if (!$this->view) {
+
+            throw new \Exception("You cannot show your controller without a view");
+
+        }
+
+        // Check for a response
+        if ($this->response) {
+            Response::header($this->response);
+        }
+
+        // Check if the View has a close method
+        if (method_exists($this->view, "close")) {
+
+            // Open the view
+            $this->view->show();
+
+            // Get output buffer contents
+            $output = ob_get_contents();
+            ob_clean();
+    
+            // Output buffer contents
+            echo $output;
+
+            // Show the form, if it exists
+            if ($this->form) {
+
+                $this->form->show();
+
+                // Show form scripts
+                if (method_exists($this->form, "showScripts")) {
+
+                    $this->form->showScripts();
+
+                }
+
+            }
+
+            // Close the view
+            $this->view->close();
+
+        }
+        else if (method_exists($this->view, "show")) {
+
+            // Show the form, if it exists
+            if ($this->form) {
+
+                $this->form->show();
+
+            }
+
+            // Show the view, if it exists
+            $this->view->show();
+
+            // Get output buffer contents
+            $output = ob_get_contents();
+            ob_clean();
+
+            // Output buffer contents
+            echo $output;
+            
+            // Show form scripts, if the form exists
+            if ($this->form) {
+
+                $this->form->showScripts();
+
+            }
+
+        }
+
+        // Done
+
+    }
+
 };

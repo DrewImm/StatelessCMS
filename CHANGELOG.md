@@ -9,6 +9,7 @@ v1.3 plans to move the show() method from user-space to kernel-space, allowing d
 - [Issue #70] - Create Controller::start()
 - [Issue #69] - Create Request::isEndpoint()
 - [Issue #68] - Allow users to set default views for 404
+- [Issue #67] - Create Controller::show()
 
 ## [1.2.3] - 2018-02-18
 
