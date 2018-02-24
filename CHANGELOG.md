@@ -4,6 +4,11 @@
 
 v1.3 plans to move the show() method from user-space to kernel-space, allowing developers to create lightweight Controller modules, as well as removing the need for check404() functions etc
 
+### Additions
+
+- [Issue #70] - Create Controller::start()
+- 
+
 ## [1.2.3] - 2018-02-18
 
 v1.2.3 Addresses documentation, cleaning up the tutorial, and making sure everything is up-to-date and in sync with the entire project.

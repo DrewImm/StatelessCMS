@@ -25,6 +25,24 @@ class Controller {
 
     /** Error response code to respond with */
     public $response;
+
+    /**
+     * Start the controller
+     * 
+     * @return boolean Returns if a view was found and shown
+     */
+    public function start() {
+
+        $this->route();
+
+        if ($this->isValid()) {
+            $this->show();
+
+            return true;
+        }
+
+        return false;
+    }
     
     /**
      * Route Requests
