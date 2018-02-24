@@ -160,6 +160,18 @@ class Request {
         
         return Request::$method;
     }
+    
+    /**
+     * Check if the path is an endpoint
+     * 
+     * @param string $endpoint Endpoint to find (needle)
+     * @param string $path (Optional) Path to check (haystack).  Default
+     *  is Request::$path
+     * @return string Returns the rest of the path if match, otherwise false
+     */
+    public static function isEndpoint($endpoint, $path = false) {
+        return (strpos(Request::$path, $endpoint) === 0);
+    }
 
     /**
      * Get the payload
