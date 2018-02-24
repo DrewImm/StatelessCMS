@@ -3,7 +3,7 @@
  * StatelessCMS.php
  * 
  * @package StatelessCMS
- * @version 1.2.3
+ * @version 1.3
  */
 
 /**
