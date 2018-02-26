@@ -44,7 +44,7 @@ class Controller {
 
             // Set 404 response
             $this->response = 404;
-            $this->view = $default404;
+            $this->view = $this->default404;
 
         }
 

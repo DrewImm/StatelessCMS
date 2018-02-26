@@ -8,6 +8,8 @@ v1.4.0 plans to add a View and Model object, and several other minor additions a
 
 ### Fixes
 
+- [Issue #71] - Controller::start() - Undefined $default404
+
 ## [1.3.0] - 2018-02-23
 
 v1.3 plans to move the show() method from user-space to kernel-space, allowing developers to create lightweight Controller modules, as well as removing the need for check404() functions etc
