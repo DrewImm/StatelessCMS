@@ -6,6 +6,7 @@ v1.4.0 plans to add a View and Model object, and several other minor additions a
 
 ### Additions
 
+- [Issue #80] - FormInputs should have the `form-control` class by default
 - [Issue #79] - Create Database::nRowsMatch()
 - [Issue #77] - DatabaseColumn unique
 - [Issue #76] - Create View module
@@ -14,7 +15,8 @@ v1.4.0 plans to add a View and Model object, and several other minor additions a
 
 ### Fixes
 
-- [issue #78] - Database::createTable() should clean $default value of single-qoutes
+- [Issue #81] - FormInputs which are invalid add the class `invalid` instead of `is-invalid`
+- [Issue #78] - Database::createTable() should clean $default value of single-qoutes
 - [Issue #71] - Controller::start() - Undefined $default404
 
 ## [1.3.0] - 2018-02-23
