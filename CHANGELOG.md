@@ -6,6 +6,7 @@ v1.4.0 plans to add a View and Model object, and several other minor additions a
 
 ### Additions
 
+- [Issue #79] - Create Database::nRowsMatch()
 - [Issue #77] - DatabaseColumn unique
 - [Issue #76] - Create View module
 - [Issue #73] - DatabaseColumn should allow array in the constructor
@@ -13,6 +14,7 @@ v1.4.0 plans to add a View and Model object, and several other minor additions a
 
 ### Fixes
 
+- [issue #78] - Database::createTable() should clean $default value of single-qoutes
 - [Issue #71] - Controller::start() - Undefined $default404
 
 ## [1.3.0] - 2018-02-23
