@@ -144,7 +144,11 @@ class Database {
      * @return mixed Returns if the table was created successfully
      */
     public function createTable($table, $columns) {
+
+        // Prepare table name
         $table = $this->cleanTable($table);
+
+        // Create query
         $query = "CREATE TABLE IF NOT EXISTS $table (";
         $key = false;
 
@@ -174,9 +178,18 @@ class Database {
                 $query .= " NOT NULL";
             }
 
+            // Column unique
+            if ($column->unique) {
+                $query .= " UNIQUE";
+            }
+
             // Default value
-            if (isset($this->default) && !empty($this->default)) {
-                $query .= " DEFAULT " . $this->default;
+            if (isset($column->default) && !empty($column->default)) {
+
+                // Prepare
+                $column->default = str_replace("'", "\'", $column->default);
+
+                $query .= " DEFAULT '" . $column->default . "'";
             }
 
             // Prepare statement for next iteration
@@ -240,6 +253,66 @@ class Database {
         }
 
         return $count;
+    }
+
+    /**
+     * Query the number of rows in a table where any elements in the array match
+     * 
+     * @param string $table Name of the table to query
+     * @param array $where Array of key => value pairs to search by
+     * @return mixed Returns the number of rows, or false on failure
+     */
+    public function nRowsMatch($table, $where) {
+
+        // Clean the table name
+        $table = $this->cleanTable($table);
+
+        // Set default count
+        $count = false;
+
+        // Seperate array into keys and values
+        $keys = array_keys($where);
+        $values = array_values($where);
+
+        // Count the number of keys
+        $nKeys = count($where);
+
+        // Create the query
+        $query = "SELECT COUNT(*) FROM " . $table . " WHERE (";
+
+        // Loop through keys
+        $i = 1;
+        foreach ($keys as $key) {
+
+            // Append the key to the query
+            $query .= $key . "=?";
+
+            // Add an OR statement
+            if ($i < $nKeys) {
+                $query .= " OR ";
+            }
+
+            // Advance the iterator
+            $i++;
+
+        }
+
+        // Close the query
+        $query .= ")";
+
+        // Run the query
+        $results = $this->preparedSelect($query, $values);
+
+        // Pull the count out of the result array
+        if (is_array($results) &&
+            count($results) &&
+            array_key_exists("COUNT(*)", $results[0])) {
+            $count = $results[0]["COUNT(*)"];
+        }
+
+        // Return the result
+        return $count;
+
     }
 
     /**

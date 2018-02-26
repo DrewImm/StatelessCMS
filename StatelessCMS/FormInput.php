@@ -264,12 +264,12 @@ class FormInput {
      */
     public function show() {
 
+        if (!array_key_exists("class", $this->attributes)) {
+            $this->attributes["class"] = "form-control";
+        }
+
         // Append valid/invalid class
         if ($this->isValid !== null) {
-
-            if (!array_key_exists("class", $this->attributes)) {
-                $this->attributes["class"] = "";
-            }
 
             if ($this->isValid) {
                 $this->attributes["valid"] = "true";
@@ -277,7 +277,7 @@ class FormInput {
             }
             else {
                 $this->attributes["invalid"] = "true";
-                $this->attributes["class"] .= " invalid";
+                $this->attributes["class"] .= " is-invalid";
             }
 
         }

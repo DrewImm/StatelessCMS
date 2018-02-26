@@ -28,16 +28,60 @@ class DatabaseColumn {
     /** If this column is the table's primary key */
     public $primary;
 
+    /** If the value of this column must be unique */
+    public $unique;
+
     /**
      * Construct a single DatabaseColumn object to be used with
      *   Connection::createTable()
      * 
-     * @param string $name Name for the column
+     * @param mixed $name (string) Name for the column.  (array) Array of key
+     *  value pairs to create from
      * @param string $type Type of database to store
      * @param boolean $auto If this should be the primary auto-incrementing key
      */
     public function __construct($name, $type, $auto = false) {
-        $this->name = $name;
+
+        if (is_string($name)) {
+            $this->name = $name;
+        }
+        else if (is_array($name)) {
+            $data = $name;
+
+            if (array_key_exists("name", $data)) {
+                $this->name = $data["name"];
+            }
+
+            if (array_key_exists("type", $data)) {
+                $this->type = $data["type"];
+            }
+
+            if (array_key_exists("default", $data)) {
+                $this->default = $data["default"];
+            }
+
+            if (array_key_exists("auto", $data)) {
+                $this->auto = $data["auto"];
+            }
+
+            if (array_key_exists("size", $data)) {
+                $this->size = $data["size"];
+            }
+
+            if (array_key_exists("require", $data)) {
+                $this->require = $data["require"];
+            }
+
+            if (array_key_exists("primary", $data)) {
+                $this->primary = $data["primary"];
+            }
+
+            if (array_key_exists("unique", $data)) {
+                $this->unique = $data["unique"];
+            }
+
+        }
+
         $this->type = $type;
         $this->auto = $auto;
     }

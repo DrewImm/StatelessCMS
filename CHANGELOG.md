@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.4.0] - 2018-02-26
+
+v1.4.0 plans to add a View and Model object, and several other minor additions and bugfixes.
+
+### Additions
+
+- [Issue #80] - FormInputs should have the `form-control` class by default
+- [Issue #79] - Create Database::nRowsMatch()
+- [Issue #77] - DatabaseColumn unique
+- [Issue #76] - Create View module
+- [Issue #73] - DatabaseColumn should allow array in the constructor
+- [Issue #72] - Create Model module
+
+### Fixes
+
+- [Issue #81] - FormInputs which are invalid add the class `invalid` instead of `is-invalid`
+- [Issue #78] - Database::createTable() should clean $default value of single-qoutes
+- [Issue #71] - Controller::start() - Undefined $default404
+
 ## [1.3.0] - 2018-02-23
 
 v1.3 plans to move the show() method from user-space to kernel-space, allowing developers to create lightweight Controller modules, as well as removing the need for check404() functions etc
