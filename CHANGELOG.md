@@ -6,6 +6,8 @@ v1.4.0 plans to add a View and Model object, and several other minor additions a
 
 ### Additions
 
+- [Issue #77] - DatabaseColumn unique
+- [Issue #73] - DatabaseColumn should allow array in the constructor
 - [Issue #72] - Create Model module
 
 ### Fixes
