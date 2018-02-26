@@ -2,9 +2,15 @@
 
 namespace Stateless;
 
+/**
+ * A View is a compilation of layout items and possibly forms to be shown in a Controller
+ */
 class View {
 
+    /** View title  */
     public $title;
+
+    /** CSS Class to attach the View's body tag */
     public $bodyClass;
 
     /**

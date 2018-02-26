@@ -2,6 +2,10 @@
 
 namespace Stateless;
 
+/**
+ * A Model is a class that represent's and interacts with database tables or
+ *  3rd party APIs
+ */
 class Model {
 
     /**
