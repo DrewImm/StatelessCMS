@@ -6,6 +6,8 @@ v1.4.0 plans to add a View and Model object, and several other minor additions a
 
 ### Additions
 
+- [Issue #72] - Create Model module
+
 ### Fixes
 
 - [Issue #71] - Controller::start() - Undefined $default404
