@@ -7,6 +7,7 @@ v1.4.1 addresses minor fixes, clean-ups, and enhancements, mainly to Forms and F
 ### Fixes
 
 - [Issue #84] - Validate callbacks must allow single-parameter functions
+- [Issue #83] - FormInput - Description should be in label
 
 ## [1.4.0] - 2018-02-26
 

@@ -372,7 +372,7 @@ class FormInput {
         // Output label
         if (!empty($this->label)) {
             echo sprintf(
-                "<label for=\"_%s\">%s</label>",
+                "<label for=\"_%s\"><strong>%s</strong>",
                 $this->slug,
                 $this->label
             );
@@ -382,6 +382,7 @@ class FormInput {
                 echo "<p class=\"description\">" . $this->description . "</p>";
             }
 
+            echo "</label>";
 
         }
 
