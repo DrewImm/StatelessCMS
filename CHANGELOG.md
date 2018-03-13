@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.4.1] - 2018-03-13
+
+v1.4.1 addresses minor fixes, clean-ups, and enhancements, mainly to Forms and FormInputs
+
+### Fixes
+
 ## [1.4.0] - 2018-02-26
 
 v1.4.0 plans to add a View and Model object, and several other minor additions and bugfixes.
