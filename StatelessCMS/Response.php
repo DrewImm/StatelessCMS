@@ -319,7 +319,7 @@ class Response {
      * @param string $key Javascript variable name.  Default is "AUTH_KEY"
      */
     public static function sendToken($token, $key = "AUTH_KEY") {
-        echo "<script>const " . $key . " = \"" . $token . "\";</script>";
+        echo "<script>var " . $key . " = \"" . $token . "\";</script>";
     }
 
 };

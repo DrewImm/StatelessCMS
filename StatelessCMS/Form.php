@@ -12,6 +12,9 @@ class Form {
     /** Form name to validate submission */
     public $name = "untitled-form";
 
+    /** Form ID to validate submission (allows mulitple same-named forms) */
+    public $id = false;
+
     /** Array of FormInput objects to populate the form */
     public $inputs = [];
 
@@ -67,6 +70,11 @@ class Form {
             // Name
             if (array_key_exists("name", $data)) {
                 $this->name = $data["name"];
+            }
+
+            // Form Id
+            if (array_key_exists("id", $data)) {
+                $this->id = $data["id"];
             }
 
             // Inputs
@@ -162,6 +170,11 @@ class Form {
      * Initialize this Form
      */
     public function init() {
+
+        // Make the form name unique
+        if ($this->id) {
+            $this->name = $this->name . "-" . $this->id;
+        }
 
         // Check if we have child atttributes
         if (is_array($this->childAttributes)) {

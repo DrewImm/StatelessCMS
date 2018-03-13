@@ -1,5 +1,16 @@
 # Changelog
 
+## [1.4.1] - 2018-03-13
+
+v1.4.1 addresses minor fixes, clean-ups, and enhancements, mainly to Forms and FormInputs
+
+### Fixes
+
+- [Issue #86] - Form should not trigger forms with the same name, should have ID field
+- [Issue #85] - Response::sendToken should use ES5 "var" instead of ES6 "const"
+- [Issue #84] - Validate callbacks must allow single-parameter functions
+- [Issue #83] - FormInput - Description should be in label
+
 ## [1.4.0] - 2018-02-26
 
 v1.4.0 plans to add a View and Model object, and several other minor additions and bugfixes.

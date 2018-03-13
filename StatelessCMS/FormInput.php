@@ -372,7 +372,7 @@ class FormInput {
         // Output label
         if (!empty($this->label)) {
             echo sprintf(
-                "<label for=\"_%s\">%s</label>",
+                "<label for=\"_%s\"><strong>%s</strong>",
                 $this->slug,
                 $this->label
             );
@@ -382,6 +382,7 @@ class FormInput {
                 echo "<p class=\"description\">" . $this->description . "</p>";
             }
 
+            echo "</label>";
 
         }
 
@@ -532,12 +533,28 @@ class FormInput {
         // Run validate function
         if (!empty($value)) {
             
+            // Check if a validate callback is specified, and run it if so
             if ($this->validateCallback) {
-                if (!($this->validateCallback)($value, $this->validateArguments)) {
 
+                // Check if validate arguments are specified, and call the callback
+                // with or without arguments, respectively.  The following block
+                // executes if the callback returns false.
+                if (
+                    (
+                        empty($this->validateArguments) &&
+                        !($this->validateCallback)($value)
+                    ) ||
+                    (
+                        !empty($this->validateArguments) &&
+                        !($this->validateCallback)($value, $this->validateArguments)
+                    )
+                 ) {
+
+                    // Callback returned false, field is not valid.
                     $this->isValid = false;
 
                     return $name . " is not valid.";
+
                 }
             }
 
