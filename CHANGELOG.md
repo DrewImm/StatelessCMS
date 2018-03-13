@@ -6,6 +6,7 @@ v1.4.1 addresses minor fixes, clean-ups, and enhancements, mainly to Forms and F
 
 ### Fixes
 
+- [Issue #86] - Form should not trigger forms with the same name, should have ID field
 - [Issue #85] - Response::sendToken should use ES5 "var" instead of ES6 "const"
 - [Issue #84] - Validate callbacks must allow single-parameter functions
 - [Issue #83] - FormInput - Description should be in label
