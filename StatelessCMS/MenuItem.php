@@ -153,9 +153,10 @@ class MenuItem {
         $activeClass = false;
         if ($this->href === Request::getPath() ||
             (
-                strpos(Request::getPath(), $this->href) !== false &&
+                $this->href &&
                 $this->href !== "/" &&
-                $this->broadActive
+                $this->broadActive &&
+                strpos(Request::getPath(), $this->href) !== false
             )) {
                 
             if (!$this->linkAttributes ||
