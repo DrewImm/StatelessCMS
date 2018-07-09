@@ -142,13 +142,6 @@ class MenuItem {
 
         echo ">";
 
-        // TODO - Remove
-        if ($this->href === "/messages/inbox-trash") {
-
-           $break = true; 
-
-        }
-
         // Check if this link matches the request path
         $activeClass = false;
         if ($this->href === Request::getPath() ||
