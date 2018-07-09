@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.4.2] - 2018-07-09
+
+MenuItem has a couple minor fixes
+
+### Fixes
+
+ - [Issue #88] - MenuItem::show() uses strpos on possible null
+ - [Issue #89] - MenuItem::show() contains temporary project-specific testing code
+
 ## [1.4.1] - 2018-03-13
 
 v1.4.1 addresses minor fixes, clean-ups, and enhancements, mainly to Forms and FormInputs
